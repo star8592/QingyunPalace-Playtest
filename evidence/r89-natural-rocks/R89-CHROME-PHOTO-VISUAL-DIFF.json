@@ -1,0 +1,17 @@
+[
+  {
+    "regionId": "04",
+    "changedPixels": 202328,
+    "changedPct": 12.858
+  },
+  {
+    "regionId": "05",
+    "changedPixels": 167104,
+    "changedPct": 10.62
+  },
+  {
+    "regionId": "06",
+    "changedPixels": 167561,
+    "changedPct": 10.649
+  }
+]

@@ -1,0 +1,192 @@
+{
+  "revision": "R88",
+  "mapId": "QY-GEOGRAPHY-001",
+  "renderedByRealChrome": true,
+  "realGPUCertified": false,
+  "originalArtworkApproved": false,
+  "sourceGeometryPreserved": true,
+  "sixWorldSitesVerified": 6,
+  "threeFloatingLandformsVerified": 3,
+  "frames": {
+    "04-real-massif-on": {
+      "filename": "R89-SIX-REGION-04-real-massif-on.png",
+      "bytes": 443205,
+      "sha256": "541f336e9172c77ef10c7cd032f5d43cb413ebaeb4c6c33e4775d5d5cfc036e0",
+      "width": 1774,
+      "height": 887
+    },
+    "04-real-massif-legacy": {
+      "filename": "R89-SIX-REGION-04-real-massif-legacy.png",
+      "bytes": 438050,
+      "sha256": "86ddda2ee3ac38dab0a12f2c0afa9ea137c6308156bfcee630463b1165630dad",
+      "width": 1774,
+      "height": 887
+    },
+    "05-real-massif-on": {
+      "filename": "R89-SIX-REGION-05-real-massif-on.png",
+      "bytes": 433422,
+      "sha256": "57aef16d1fb12f222b9143da8d24897ddeab8c541dea1c9e64e25db06a955bef",
+      "width": 1774,
+      "height": 887
+    },
+    "05-real-massif-legacy": {
+      "filename": "R89-SIX-REGION-05-real-massif-legacy.png",
+      "bytes": 431506,
+      "sha256": "8f5aa4c7d1af9bc2dd36b669936d16c258f37d1882676391dd106b2bcd5be3e1",
+      "width": 1774,
+      "height": 887
+    },
+    "06-real-massif-on": {
+      "filename": "R89-SIX-REGION-06-real-massif-on.png",
+      "bytes": 475272,
+      "sha256": "33cfec4fae48c4bea76b44144a3323ddc7dd4554e53503192a166c18a345036d",
+      "width": 1774,
+      "height": 887
+    },
+    "06-real-massif-legacy": {
+      "filename": "R89-SIX-REGION-06-real-massif-legacy.png",
+      "bytes": 471334,
+      "sha256": "6aaa5fcbc56225feac7d59d506719092579cebcdc8b1acbfa49f8524dc7dc75a",
+      "width": 1774,
+      "height": 887
+    }
+  },
+  "states": {
+    "04-real-massif-on": {
+      "eye": [
+        -2051.3708657006136,
+        1329.5,
+        -1402.2133195926328
+      ],
+      "target": [
+        -2400,
+        1155.9,
+        -1810
+      ]
+    },
+    "04-real-massif-legacy": {
+      "eye": [
+        -2051.3708657006136,
+        1329.5,
+        -1402.2133195926328
+      ],
+      "target": [
+        -2400,
+        1155.9,
+        -1810
+      ]
+    },
+    "05-real-massif-on": {
+      "eye": [
+        1806.9653259636884,
+        1283.5,
+        -1668.2851897925245
+      ],
+      "target": [
+        2400,
+        1094.1,
+        -1710
+      ]
+    },
+    "05-real-massif-legacy": {
+      "eye": [
+        1806.9653259636884,
+        1283.5,
+        -1668.2851897925245
+      ],
+      "target": [
+        2400,
+        1094.1,
+        -1710
+      ]
+    },
+    "06-real-massif-on": {
+      "eye": [
+        -214.03788360749314,
+        1915.5,
+        -2288.592516678553
+      ],
+      "target": [
+        100.00000000000001,
+        1675.1,
+        -2990
+      ]
+    },
+    "06-real-massif-legacy": {
+      "eye": [
+        -214.0378836074932,
+        1915.5,
+        -2288.592516678553
+      ],
+      "target": [
+        100.00000000000004,
+        1675.1,
+        -2990
+      ]
+    },
+    "publicControlOff": {
+      "enabled": false,
+      "label": "R89 整体岩峰：旧版碎石（点此恢复）"
+    },
+    "publicControlOn": {
+      "enabled": true,
+      "label": "R89 整体岩峰：开（点此看旧版）"
+    },
+    "publicTourButtonsVerified": true
+  },
+  "worldJourneyInitial": {
+    "active": false,
+    "paused": false,
+    "progress": 0,
+    "durationSeconds": 47.49999999999999,
+    "actualCanonicalSiteCount": 6,
+    "path": [
+      {
+        "index": 0,
+        "id": "all",
+        "label": "青云宗世界总览"
+      },
+      {
+        "index": 1,
+        "id": "01",
+        "label": "青岚山门"
+      },
+      {
+        "index": 2,
+        "id": "03",
+        "label": "青云宫主殿"
+      },
+      {
+        "index": 3,
+        "id": "06",
+        "label": "云顶玄宫"
+      },
+      {
+        "index": 4,
+        "id": "04",
+        "label": "远峰道宫"
+      },
+      {
+        "index": 5,
+        "id": "05",
+        "label": "东岭配殿"
+      },
+      {
+        "index": 6,
+        "id": "02",
+        "label": "西崖听瀑亭"
+      },
+      {
+        "index": 7,
+        "id": "all",
+        "label": "青云宗世界总览"
+      }
+    ],
+    "authenticSceneChanged": false,
+    "collisionOrWalkingCertified": false,
+    "sourceArtworkApproved": false
+  },
+  "actualRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "errors": [],
+  "verifiedFrameCount": 6
+}
