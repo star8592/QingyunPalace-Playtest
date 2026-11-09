@@ -3,8 +3,18 @@
  * Overhang/rock-sculpture geometry NOT represented by height grids.
  */
 import * as THREE from 'three';
-import tianzi from './r92-tianzi-real-dem.json' with {type:'json'};
-import sanqing from './r92-sanqing-real-dem.json' with {type:'json'};
+async function inflateActualSRTM(name){
+ const u=new URL('./r92-'+name+'-real-dem.json.gz.b64',import.meta.url);
+ const response=await fetch(u);
+ if(!response.ok)throw Error('Real source unavailable '+u+' '+response.status);
+ const text=(await response.text()).trim();
+ const encoded=Uint8Array.from(atob(text),c=>c.charCodeAt(0));
+ const unpacked=new Blob([encoded]).stream().pipeThrough(new DecompressionStream('gzip'));
+ const output=JSON.parse(await new Response(unpacked).text());
+ if(output.heights.length!==321*289)throw Error('Bad SRTM grid');
+ return output;
+}
+const [tianzi,sanqing]=await Promise.all([inflateActualSRTM('tianzi'),inflateActualSRTM('sanqing')]);
 import audit from './r92-grounded-buildings-audit.json' with {type:'json'};
 const sources={tianzi,sanqing};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
