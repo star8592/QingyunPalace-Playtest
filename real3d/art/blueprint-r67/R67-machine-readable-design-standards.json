@@ -1,0 +1,281 @@
+{
+  "documentId": "QY-R67-STANDARD-PRODUCTION-PACK-001",
+  "revision": "R67",
+  "authoritativeMapId": "QY-GEOGRAPHY-001",
+  "coordinateFrame": {
+    "X": "east-positive",
+    "Y": "vertical-positive",
+    "Z": "south-positive",
+    "north": "negative Z",
+    "siteWorldExtentM": [
+      7500,
+      6800
+    ],
+    "units": "metres",
+    "contourIntervalM": 100,
+    "sourceDEMGrid": [
+      161,
+      145
+    ],
+    "R58OriginalTerrainVertices": 23345,
+    "R58OriginalTerrainTriangles": 46080
+  },
+  "designStatus": {
+    "R58TerrainSourceIsFrozen": true,
+    "sixSummitsFrozen": true,
+    "floatingIslandsCurrentlyInR66Scene": 0,
+    "floatingIslandsR67OnlyDesignProposal": true,
+    "originalConceptSourcePNGsPhysicallyVerified": 0,
+    "originalConceptSourcePNGsRequired": 9,
+    "sourceArtworkQualityMatchApproved": false,
+    "buildingSourceOrthographicImagesActuallyRendered": 30
+  },
+  "newFloatingMassProposals": [
+    {
+      "id": "QY-FLOAT-06-MAJOR",
+      "existingAnchorId": "06",
+      "existingLandmarkMayMove": false,
+      "topLipDiameterM": 530,
+      "narrowRootTipDiameterM": 100,
+      "invertedHeightM": 305,
+      "visualCloudGapM": 115,
+      "renderMaskAndPhysicsConflictUnresolved": true,
+      "requiresExplicitVisualAndCollisionMigration": true
+    },
+    {
+      "id": "QY-FLOAT-04-SECONDARY",
+      "existingAnchorId": "04",
+      "existingLandmarkMayMove": false,
+      "topLipDiameterM": 370,
+      "narrowRootTipDiameterM": 84,
+      "invertedHeightM": 245,
+      "visualCloudGapM": 92,
+      "requiresExplicitVisualAndCollisionMigration": true
+    },
+    {
+      "id": "QY-FLOAT-05-SECONDARY",
+      "existingAnchorId": "05",
+      "existingLandmarkMayMove": false,
+      "topLipDiameterM": 410,
+      "narrowRootTipDiameterM": 94,
+      "invertedHeightM": 255,
+      "visualCloudGapM": 98,
+      "requiresExplicitVisualAndCollisionMigration": true
+    }
+  ],
+  "architecturalScaleStudy": [
+    {
+      "regionId": "01",
+      "name": "青岚山门",
+      "R58AnchorWorldXYZ": [
+        0,
+        0,
+        2880
+      ],
+      "R58ActualPlatformSurfaceElevationM": 0.032282512328174626,
+      "regionPlatformDiameterM": 340,
+      "existingMainBuildingWidthM": 94,
+      "existingMainBuildingDepthM": 42,
+      "existingBuildingNominalHeightM": 62,
+      "existingMainHallVsPlatformWidthFraction": 0.2765,
+      "proposedEntireArchitecturalGroupVsPlatformWidthFraction": 0.52,
+      "proposedGroupEnvelopeWidthM": 176.8,
+      "proposalDoesNotRescaleMainBuilding": true,
+      "artDirectorMustApproveProposedEnvelope": true
+    },
+    {
+      "regionId": "02",
+      "name": "西崖听瀑亭",
+      "R58AnchorWorldXYZ": [
+        -2180,
+        520,
+        980
+      ],
+      "R58ActualPlatformSurfaceElevationM": 520,
+      "regionPlatformDiameterM": 210,
+      "existingMainBuildingWidthM": 35,
+      "existingMainBuildingDepthM": 31,
+      "existingBuildingNominalHeightM": 35,
+      "existingMainHallVsPlatformWidthFraction": 0.1667,
+      "proposedEntireArchitecturalGroupVsPlatformWidthFraction": 0.42,
+      "proposedGroupEnvelopeWidthM": 88.2,
+      "proposalDoesNotRescaleMainBuilding": true,
+      "artDirectorMustApproveProposedEnvelope": true
+    },
+    {
+      "regionId": "03",
+      "name": "青云宫主殿",
+      "R58AnchorWorldXYZ": [
+        0,
+        800,
+        -550
+      ],
+      "R58ActualPlatformSurfaceElevationM": 800,
+      "regionPlatformDiameterM": 490,
+      "existingMainBuildingWidthM": 178,
+      "existingMainBuildingDepthM": 130,
+      "existingBuildingNominalHeightM": 90,
+      "existingMainHallVsPlatformWidthFraction": 0.3633,
+      "proposedEntireArchitecturalGroupVsPlatformWidthFraction": 0.65,
+      "proposedGroupEnvelopeWidthM": 318.5,
+      "proposalDoesNotRescaleMainBuilding": true,
+      "artDirectorMustApproveProposedEnvelope": true
+    },
+    {
+      "regionId": "04",
+      "name": "远峰道宫",
+      "R58AnchorWorldXYZ": [
+        -2400,
+        1200,
+        -1810
+      ],
+      "R58ActualPlatformSurfaceElevationM": 1200,
+      "regionPlatformDiameterM": 230,
+      "existingMainBuildingWidthM": 94,
+      "existingMainBuildingDepthM": 71,
+      "existingBuildingNominalHeightM": 67,
+      "existingMainHallVsPlatformWidthFraction": 0.4087,
+      "proposedEntireArchitecturalGroupVsPlatformWidthFraction": 0.64,
+      "proposedGroupEnvelopeWidthM": 147.2,
+      "proposalDoesNotRescaleMainBuilding": true,
+      "artDirectorMustApproveProposedEnvelope": true
+    },
+    {
+      "regionId": "05",
+      "name": "东岭配殿",
+      "R58AnchorWorldXYZ": [
+        2400,
+        1140,
+        -1710
+      ],
+      "R58ActualPlatformSurfaceElevationM": 1140,
+      "regionPlatformDiameterM": 300,
+      "existingMainBuildingWidthM": 110,
+      "existingMainBuildingDepthM": 91,
+      "existingBuildingNominalHeightM": 65,
+      "existingMainHallVsPlatformWidthFraction": 0.3667,
+      "proposedEntireArchitecturalGroupVsPlatformWidthFraction": 0.62,
+      "proposedGroupEnvelopeWidthM": 186.0,
+      "proposalDoesNotRescaleMainBuilding": true,
+      "artDirectorMustApproveProposedEnvelope": true
+    },
+    {
+      "regionId": "06",
+      "name": "云顶玄宫",
+      "R58AnchorWorldXYZ": [
+        100,
+        1730,
+        -2990
+      ],
+      "R58ActualPlatformSurfaceElevationM": 1730,
+      "regionPlatformDiameterM": 270,
+      "existingMainBuildingWidthM": 142,
+      "existingMainBuildingDepthM": 102,
+      "existingBuildingNominalHeightM": 130,
+      "existingMainHallVsPlatformWidthFraction": 0.5259,
+      "proposedEntireArchitecturalGroupVsPlatformWidthFraction": 0.65,
+      "proposedGroupEnvelopeWidthM": 175.5,
+      "proposalDoesNotRescaleMainBuilding": true,
+      "artDirectorMustApproveProposedEnvelope": true
+    }
+  ],
+  "modularProduction": {
+    "roof": {
+      "moduleIds": [
+        "ROOF-A",
+        "ROOF-B",
+        "ROOF-C",
+        "ROOF-D"
+      ],
+      "threeViewDesignPage": "15",
+      "dimensionsAreParameterProposals": true
+    },
+    "flyingEavesDougong": {
+      "moduleIds": [
+        "DG-A",
+        "DG-B",
+        "DG-C",
+        "DG-D"
+      ],
+      "threeViewDesignPage": "16",
+      "dimensionsAreParameterProposals": true
+    },
+    "plinthRailStair": {
+      "moduleIds": [
+        "BASE-A",
+        "STAIR-B",
+        "RAIL-C",
+        "STAIR-D"
+      ],
+      "designPage": "17",
+      "collisionAndSafetyNotCertified": true
+    },
+    "bridgesGalleries": {
+      "moduleIds": [
+        "BR-A",
+        "BR-B",
+        "BR-C",
+        "BR-D"
+      ],
+      "designPage": "18",
+      "navigationNotCertified": true
+    },
+    "floatingCrags": {
+      "moduleIds": [
+        "FLOAT-A",
+        "FLOAT-B",
+        "FLOAT-C",
+        "FLOAT-D",
+        "FLOAT-E"
+      ],
+      "designPage": "19",
+      "renderAndGameplayCollisionMustReconcile": true
+    },
+    "waterCloudSkyRiver": {
+      "topologyOwner": "R58/QY-GEOGRAPHY-001",
+      "branches": [
+        "W-WEST-MAIN",
+        "W-CENTRAL"
+      ],
+      "floatingWaterIsPermitted": true,
+      "hydraulicsNotSimulated": true,
+      "designPage": "20"
+    }
+  },
+  "productionGates": [
+    {
+      "name": "P0_SOURCE_FREEZE",
+      "condition": "exact six site anchor coords, DEM and river topology untouched"
+    },
+    {
+      "name": "P1_ORIGINAL_CONCEPT_INTAKE",
+      "condition": "all 9 official original artworks have valid PNG bytes and hashes"
+    },
+    {
+      "name": "P2_ART_PROPORTION",
+      "condition": "approve silhouette ratios 01..06 against original paintings"
+    },
+    {
+      "name": "P3_REAL_ORTHO_SOURCE",
+      "condition": "5 unique Blender views per source architecture, 30 total"
+    },
+    {
+      "name": "P4_DCC_RECONSTRUCTION",
+      "condition": "editable Blender, proper normals/UV, independent naming and GLB integrity"
+    },
+    {
+      "name": "P5_FLOATING_MASS_COLLISION",
+      "condition": "visual void, terrain mask, collision/NavMesh and routes agree"
+    },
+    {
+      "name": "P6_REAL_CHROME_REVIEW",
+      "condition": "six-camera screenshots and visual human review"
+    },
+    {
+      "name": "P7_REAL_GPU",
+      "condition": "RTX 5070Ti GPU and mobile FPS measured on actual hardware"
+    }
+  ],
+  "notEngineeringSafetyCertified": true,
+  "notAutomaticallyReadyToDeploy": true
+}

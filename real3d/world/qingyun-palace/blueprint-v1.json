@@ -1,0 +1,187 @@
+{
+  "schema": "qingyun-palace/terrain-master/v1.0.0",
+  "project": "青云宗 · 青云宫",
+  "revision": "R58",
+  "status": "REFERENCE_LOCK_FOR_ISOLATED_BLOCKOUT_NOT_GAMEPLAY_RELEASE",
+  "freezePolicy": {
+    "stableMapId": "QY-GEOGRAPHY-001",
+    "structuralChangesNeed": "explicit blueprint version bump, measured migration and R10 original-painting comparison",
+    "allowIndependentLocalModelIterations": true,
+    "neverSilentlyRescaleOrMoveLandmarks": true,
+    "oldR10QinglanGate": "immutable visual reference for the entrance, not the entire new world",
+    "legacyR40toR57": "separate 2km source-painting optical-prototype, never silently edited or merged into this 7.5km world"
+  },
+  "authoritativeSources": {
+    "level0": "one unified overall Qingyun Palace six-region world overview: full geographic relationship and silhouette",
+    "level1": "Qingyun Palace 7500m x 6800m overall building planning sheet: named areas, height tiers and branch relationships",
+    "level2": "six local scenic detail concept sheets: architecture, surfaces, terraces, rock silhouettes only",
+    "level3": "R10 Qinglan Gate original art: authoritative local gate look/camera, not the topology for the entire Qingyun Palace",
+    "nonAuthoritative": [
+      "Any alternative generated poster numeric altitudes conflicting with the level1 overall planning sheet",
+      "Decorative arrows, scale bars or invented text within the generative images",
+      "Concept-art mist concealing physical gaps: every waterfall source and path must be modelled as real geometry"
+    ],
+    "localOriginalImageFilenamesPendingRemoteImport": [
+      "QY-00-world-overview-original.png",
+      "QY-01-gate-original.png",
+      "QY-02-west-waterfall-original.png",
+      "QY-03-main-hall-original.png",
+      "QY-04-west-remote-hall-original.png",
+      "QY-05-east-wing-original.png",
+      "QY-06-cloud-peak-original.png",
+      "QY-07-full-map-structural-layers-original.png",
+      "QY-08-building-language-original.png"
+    ],
+    "officialSourceFileTransferStatus": "GENERATED_IN_CHATGPT_NOT_YET_COPIED_TO_Z890",
+    "noLocalProceduralArtGeneration": true
+  },
+  "units": "meters",
+  "coordinateFrame": {
+    "center": "Qingyun Palace terrain center",
+    "xPositive": "east",
+    "zNegative": "north/back of the scene",
+    "yPositive": "height above Qinglan Gate entrance",
+    "eastWestExtentM": 7500,
+    "southNorthExtentM": 6800,
+    "xBounds": [-3750, 3750],
+    "zBounds": [-3400, 3400],
+    "gateReferenceHeight": 0,
+    "fixedNorthIsNegativeZ": true
+  },
+  "regions": [
+    {
+      "id": "01",
+      "name": "青岚山门",
+      "kind": "sect_gate",
+      "place": [0, 0, 2880],
+      "platformRadiusM": 170,
+      "massifOuterRadiusM": 650,
+      "altitudeBandM": [-20, 80],
+      "building": { "type": "grand_gate", "mainWidthM": 94, "mainDepthM": 42, "heightM": 62 },
+      "anchorFeatures": ["large blue-green gold roof", "white stone arch", "R10 pink flowering cherry tree to left foreground", "central bluestone arrival plaza", "rock foundations rather than floating accessories"]
+    },
+    {
+      "id": "02",
+      "name": "西崖听瀑亭",
+      "kind": "waterfall_retreat",
+      "place": [-2180, 520, 980],
+      "platformRadiusM": 105,
+      "massifOuterRadiusM": 800,
+      "altitudeBandM": [480, 620],
+      "building": { "type": "waterfall_pavilion", "mainWidthM": 35, "mainDepthM": 31, "heightM": 35 },
+      "anchorFeatures": ["pavilion rests on broad exposed cliff rim", "main west waterfall lip directly below", "water must have high feed and low basin", "white stone cliff stair", "visible old pine roots grip rock"]
+    },
+    {
+      "id": "03",
+      "name": "青云宫主殿",
+      "kind": "central_court",
+      "place": [0, 800, -550],
+      "platformRadiusM": 245,
+      "massifOuterRadiusM": 1130,
+      "altitudeBandM": [700, 900],
+      "building": { "type": "main_hall_complex", "mainWidthM": 178, "mainDepthM": 130, "heightM": 90 },
+      "anchorFeatures": ["highest visual mass in middle tier", "symmetric blue-green multi-eave roof", "white columns", "gold center roundel", "water terraces to both sides", "clear central ceremonial procession axis"]
+    },
+    {
+      "id": "04",
+      "name": "远峰道宫",
+      "kind": "western_summit_hall",
+      "place": [-2400, 1200, -1810],
+      "platformRadiusM": 115,
+      "massifOuterRadiusM": 980,
+      "altitudeBandM": [1100, 1300],
+      "building": { "type": "western_remote_hall", "mainWidthM": 94, "mainDepthM": 71, "heightM": 67 },
+      "anchorFeatures": ["remote rocky summit", "long arched gallery to middle tier", "large pine silhouettes", "natural cliff steps", "independent minor hall"]
+    },
+    {
+      "id": "05",
+      "name": "东岭配殿",
+      "kind": "eastern_wing",
+      "place": [2400, 1140, -1710],
+      "platformRadiusM": 150,
+      "massifOuterRadiusM": 1000,
+      "altitudeBandM": [1050, 1250],
+      "building": { "type": "eastern_wing_halls", "mainWidthM": 110, "mainDepthM": 91, "heightM": 65 },
+      "anchorFeatures": ["east ridge branch", "practice and study pavilions", "arched bridges rather than disconnected floating floors", "far terrace views of the main hall"]
+    },
+    {
+      "id": "06",
+      "name": "云顶玄宫",
+      "kind": "topmost_sanctum",
+      "place": [100, 1730, -2990],
+      "platformRadiusM": 135,
+      "massifOuterRadiusM": 1050,
+      "altitudeBandM": [1600, 1800],
+      "building": { "type": "uppermost_palace", "mainWidthM": 142, "mainDepthM": 102, "heightM": 130 },
+      "anchorFeatures": ["highest central sanctum", "broad bedrock summit", "golden luminous concentric halo high above the building", "blue roof and ivory stone", "clear physical ascent from main hall"]
+    }
+  ],
+  "connectivity": {
+    "mainSpine": ["01", "03", "06"],
+    "secondaryAccess": [["03", "02"], ["03", "04"], ["03", "05"], ["04", "06"]],
+    "requiredRoutes": [
+      { "id": "MAIN-ASCENT", "regions": ["01", "03", "06"], "mode": "stair+mountain gallery", "status": "TO_MODEL_NOT_WALKABLE_YET" },
+      { "id": "WEST-WATERFALL", "regions": ["03", "02"], "mode": "stone bridge+switchback stairs", "status": "TO_MODEL_NOT_WALKABLE_YET" },
+      { "id": "WEST-RIDGE", "regions": ["03", "04"], "mode": "arcade+ridge trail", "status": "TO_MODEL_NOT_WALKABLE_YET" },
+      { "id": "EAST-RIDGE", "regions": ["03", "05"], "mode": "arch bridge+ridge terrace", "status": "TO_MODEL_NOT_WALKABLE_YET" },
+      { "id": "PEAK-WEST", "regions": ["04", "06"], "mode": "high-elevation colonnade", "status": "TO_MODEL_NOT_WALKABLE_YET" }
+    ]
+  },
+  "hydrology": {
+    "rule": "All modelled water flows to strictly lower height; source/basin/outlet coordinates explicit. No waterline terminates at texture/LOD edge.",
+    "branches": [
+      {
+        "id": "W-WEST-MAIN",
+        "waypointsXYZ": [
+          [-200, 1660, -2870],
+          [-720, 1350, -2160],
+          [-1750, 770, -1000],
+          [-2120, 620, 750],
+          [-2130, 485, 920],
+          [-1770, 405, 1290],
+          [-900, 215, 1950],
+          [-330, 50, 2670],
+          [-440, -20, 3340]
+        ],
+        "waterfallPairs": [[3, 4]],
+        "join": "W-DOWNSTREAM"
+      },
+      {
+        "id": "W-CENTRAL",
+        "waypointsXYZ": [
+          [180, 920, -1110],
+          [670, 800, -560],
+          [800, 655, -330],
+          [970, 440, 280],
+          [620, 245, 1260],
+          [80, 100, 2070],
+          [-330, 50, 2670]
+        ],
+        "waterfallPairs": [[2, 3]],
+        "join": "W-WEST-MAIN"
+      }
+    ],
+    "scope": "topological survey elevations, not final certified ground-intersecting water meshes"
+  },
+  "assetIdentity": {
+    "primaryRoof": "QY_ROOF_A_BLUE_CELADON_GOLD",
+    "stone": "QY_STONE_A_IVORY_GREY_BLUE",
+    "mountain": "QY_ROCK_A_LAYERED_GRANITE_LICHEN",
+    "oldPines": "QY_PINE_A_ROOTED_ANCIENT",
+    "cherry": "QY_CHERRY_A_PINK_ROOTED",
+    "water": "QY_WATER_A_TURQUOISE_SOURCE_TO_SEA",
+    "bridge": "QY_BRIDGE_A_CARVED_WHITE_GALLERY",
+    "stairs": "QY_STAIRS_A_OLD_WHITE_GRANITE",
+    "lantern": "QY_LANTERN_A_WHITE_GOLD",
+    "mustReuseMotifs": ["twin blue roof wings", "white carved arch", "warm gold cloud spiral medallion", "real rooted pine", "sakura on woody branches"]
+  },
+  "noFalseClaims": {
+    "illustrationIsNotMetricSurvey": true,
+    "allCoordinatesAreAuthoredProvisionalConstraints": true,
+    "newBlockoutDoesNotReplaceDeployedMap": true,
+    "realHydrologyMeshContinuityCertified": false,
+    "allPathsWalkabilityCertified": false,
+    "plantGroundContactCertified": false,
+    "artQualityCertified": false
+  }
+}

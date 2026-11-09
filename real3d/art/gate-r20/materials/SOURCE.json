@@ -1,0 +1,77 @@
+{
+  "sourceConcept": "art/source/ENV_M01_QINGLAN_GATE_reference.webp",
+  "sourceApproval": "PROVISIONAL",
+  "surfaceSources": [
+    {
+      "provider": "Poly Haven",
+      "name": "roof_tiles_14",
+      "license": "CC0",
+      "sourceUrl": "https://polyhaven.com/a/roof_tiles_14"
+    },
+    {
+      "provider": "Poly Haven",
+      "name": "plastered_wall",
+      "license": "CC0",
+      "sourceUrl": "https://polyhaven.com/a/plastered_wall"
+    }
+  ],
+  "styleRule": "old blue-gray fired ceramics, grey wet limestone, old burgundy timber; generated textures are only supporting texture details",
+  "maps": [
+    {
+      "file": "art/gate-r20/materials/roof-basecolor.jpg",
+      "bytes": 228698,
+      "sha256": "5ffb29879b1010baf91debf44dd9c7d99658e294f0c48f163843e85c58c0dacc",
+      "origin": "Poly Haven microtexture derivative",
+      "usage": "surface photo/detail, not a source model or concept art"
+    },
+    {
+      "file": "art/gate-r20/materials/stone-basecolor.jpg",
+      "bytes": 150170,
+      "sha256": "975fa50d814246602ca6ff401a87e3a39a25ee9d58bb08f89ee6fd3810c30c03",
+      "origin": "Poly Haven microtexture derivative",
+      "usage": "surface photo/detail, not a source model or concept art"
+    },
+    {
+      "file": "art/gate-r20/materials/roof-roughness.jpg",
+      "bytes": 50305,
+      "sha256": "1aaffb1ae02546afee6afc92eb993721841b11da3ccd529a17448d16fd1a7f7a",
+      "origin": "Poly Haven microtexture derivative",
+      "usage": "surface photo/detail, not a source model or concept art"
+    },
+    {
+      "file": "art/gate-r20/materials/roof-normal.jpg",
+      "bytes": 172182,
+      "sha256": "ab77251c45ecbbc7b53dc623e25ebb826957188743989e575a1a8527be6bac73",
+      "origin": "Poly Haven microtexture derivative",
+      "usage": "surface photo/detail, not a source model or concept art"
+    },
+    {
+      "file": "art/gate-r20/materials/stone-roughness.jpg",
+      "bytes": 12572,
+      "sha256": "6bd0efc1c28b2912e2b6a8998f590b0d4260bf400f40f837b8ef03ac74a08bfd",
+      "origin": "Poly Haven microtexture derivative",
+      "usage": "surface photo/detail, not a source model or concept art"
+    },
+    {
+      "file": "art/gate-r20/materials/stone-normal.jpg",
+      "bytes": 236374,
+      "sha256": "8525d91fcf13fbf8a7246fd12ad1de1982928e7c2ed6ecff690908b232f07635",
+      "origin": "Poly Haven microtexture derivative",
+      "usage": "surface photo/detail, not a source model or concept art"
+    },
+    {
+      "file": "art/gate-r20/materials/wood-basecolor.jpg",
+      "bytes": 98346,
+      "sha256": "d0ed7fd6d5af15def48b6923c8fd514464642650ff167db0e8e4257629b9875c",
+      "origin": "generated wood grain for texture detail only",
+      "usage": "surface photo/detail, not a source model or concept art"
+    },
+    {
+      "file": "art/gate-r20/materials/wood-roughness.jpg",
+      "bytes": 26560,
+      "sha256": "383db52c50055cee2bb25433bda7d8fbf6c6d95de0a24e6f453a2a63ec736363",
+      "origin": "generated wood grain for texture detail only",
+      "usage": "surface photo/detail, not a source model or concept art"
+    }
+  ]
+}
