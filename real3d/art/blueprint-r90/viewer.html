@@ -83,7 +83,7 @@ body:not(.r85-advanced) #tip{display:none}
   <button data-r85-stop="06">⑥玄宫</button>
   <button id="r90-mainland-toggle">R90 主体山脉：新版（点此对照旧版）</button>
   <button id="r90-mainland-camera">整座主山脉 · 全景</button>
-  <button id="r90-path-camera">沿山登顶 · 小路特写</button>
+  <button id="r90-path-camera">小路与石阶近景</button>
   <button id="r89-natural-toggle">R89 悬浮岩峰：开</button>
   <button data-r89-massif="04">④远峰全山</button>
   <button data-r89-massif="05">⑤东岭全山</button>
@@ -99,7 +99,7 @@ body:not(.r85-advanced) #tip{display:none}
   <button data-r86-profile="06">⑥玄宫完整侧影</button>
   <button id="r85-advanced">详细控制</button>
  </div>
- <div id="r85-caption">左键旋转 · 滚轮缩放 · 右键平移。R90主体山脉来自武当SRTM高程采样，仅展示一条2.4米宽的步行小路，不再连六条大路；尚未通过真实通行碰撞验收。</div>
+ <div id="r85-caption">左键旋转 · 滚轮缩放 · 右键平移。R90主体山脉采用武当SRTM真实高程；01至03尝试2.4米窄山路，陡坡用实体石阶，尚未通过人物碰撞和寻路验收。</div>
 </section>
 <nav id="nav" aria-label="六个固定区域相机导航">
 <button id="all" aria-pressed="true">全图</button>
@@ -390,14 +390,19 @@ function setR90MainlandEnabled(on){
 }
 function setR90MainlandCamera(detail=false){
  if(journey.report().active)journey.setActive(false);
- const p=detail?new THREE.Vector3(1150,1250,1980):new THREE.Vector3(2250,1950,2250);
- const t=detail?new THREE.Vector3(0,320,1050):new THREE.Vector3(0,720,-750);
+ const focus=mainland.report.actualFootpath.actualStoneStairFocusWorldXYZ;
+ const p=detail&&focus?
+  new THREE.Vector3(focus[0]+145,focus[1]+90,focus[2]+170):
+  new THREE.Vector3(2250,1950,2250);
+ const t=detail&&focus?
+  new THREE.Vector3(focus[0],focus[1]+2,focus[2]):
+  new THREE.Vector3(0,720,-750);
  camera.position.copy(p);controls.target.copy(t);
  camera.fov=detail?48:48;camera.near=.4;camera.updateProjectionMatrix();
  const old=controls.enableDamping;
  controls.enableDamping=false;controls.update();controls.enableDamping=old;
  document.getElementById('r85-chapter').textContent=detail?
-   '山脚至③主殿 · 2.4m窄步行古道':'整座主山脉 · 新旧起伏与山谷连通';
+   '山脚至③主殿 · 2.4m步道与实体石阶':'整座主山脉 · 新旧起伏与山谷连通';
  return {eye:p.toArray(),target:t.toArray(),focus:detail?'trail':'entire-mainland'};
 }
 function setR89NaturalMode(on){

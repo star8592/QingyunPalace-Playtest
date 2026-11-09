@@ -1,10 +1,10 @@
 [
   {
-    "camera": "whole-mainland",
-    "changedPct": 1.007
+    "view": "whole-mainland",
+    "changedPct": 1.01
   },
   {
-    "camera": "narrow-footpath",
-    "changedPct": 53.387
+    "view": "narrow-footpath",
+    "changedPct": 62.51
   }
 ]

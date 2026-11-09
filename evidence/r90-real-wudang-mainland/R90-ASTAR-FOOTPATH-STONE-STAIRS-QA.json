@@ -1,0 +1,59 @@
+{
+  "algorithm": "A_STAR_REAL_SRTM_VISUAL_TERRAIN",
+  "from": "01",
+  "to": "03",
+  "widthMeters": 2.4,
+  "maxPermittedGridSegmentGrade": 0.3,
+  "projectedToVisibleR58AndR63Surfaces": true,
+  "sourceGridNodes": 110,
+  "searchExpandedNodes": 5772,
+  "pathCount": 1,
+  "carRoadsToSixPeaks": 0,
+  "falseSuspendedBridgePaths": 0,
+  "unprovenRouteSegmentsHidden": false,
+  "walkableNavmeshPassed": false,
+  "maxMeasuredSmoothedGrade": 0.594,
+  "unsurveyedSteepSegments": 0,
+  "segmentsRequiringActualStairsAndSurvey": 126,
+  "lengthMeters": 6481.37,
+  "routePointCount": 437,
+  "actualSolidStoneStairTreads": 3535,
+  "actualSegmentedStairSpans": 126,
+  "stairCorridorTotalMeters": 1800.45,
+  "maxUnsteppedFootTrailGrade": 0.24,
+  "maxUnsteppedGradeHardLimit": 0.24,
+  "stairEngineeringAndPlayerCollisionPending": true,
+  "pathStyle": "GROUND_FOLLOWING_FOOT_TRAIL_AND_ACTUAL_STONE_STAIR_TREADS",
+  "realSampledPathPointsXYZ": [
+    [
+      0,
+      0.68,
+      2880.56
+    ],
+    [
+      -179.47,
+      174.54,
+      1698.3
+    ],
+    [
+      -229.86,
+      402.92,
+      779.17
+    ],
+    [
+      -761.72,
+      603.99,
+      -413.19
+    ],
+    [
+      0,
+      800.68,
+      -566.67
+    ]
+  ],
+  "actualStoneStairFocusWorldXYZ": [
+    -230.43,
+    404.6,
+    773.1
+  ]
+}

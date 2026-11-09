@@ -1,6 +1,111 @@
 {
-  "revision": "R88",
+  "revision": "R90",
   "mapId": "QY-GEOGRAPHY-001",
+  "actualMainland": {
+    "revision": "R90-DEM",
+    "mapId": "QY-GEOGRAPHY-001",
+    "terrainGeneration": "WUDANG_SRTM_SKADI_N32E111_ACTUAL_DEM",
+    "demSource": "https://elevation-tiles-prod.s3.amazonaws.com/skadi/N32/N32E111.hgt.gz",
+    "demAttribution": "https://registry.opendata.aws/terrain-tiles/",
+    "demGridResolution": [
+      321,
+      289
+    ],
+    "originalWudangHeightsArtAdaptedNotExactMapping": true,
+    "sourceDEMReferenceCenter": [
+      32.4,
+      111.074
+    ],
+    "majorContinuousMountainAreas": 1,
+    "formerArtificialBroadRidgeConnections": 6,
+    "oldArtificialRidgeWidthsMeters": [
+      290,
+      340,
+      320,
+      320,
+      285,
+      250
+    ],
+    "newStraightArtificialRidgeCount": 0,
+    "mainNaturalSpineCount": 1,
+    "majorBranchSpurs": 3,
+    "sourceR58Unmodified": true,
+    "sourceR58OriginalChecksum": -250681.4157371521,
+    "authoritativeR58VertexCount": 23345,
+    "r58DerivedMovedVertices": 22621,
+    "r63DerivedMovedVertices": 91054,
+    "maxR58DerivedDisplacementMeters": 1022.09,
+    "shiftedLegacyForestInstances": 7682,
+    "islandR68SummitAndBasinExclusionEnabled": false,
+    "airborneIslandsRemainSeparateGeometry": true,
+    "originalLegacyR68ExcavatedBasinsReplacedWithDemGround": true,
+    "actualFootpath": {
+      "algorithm": "A_STAR_REAL_SRTM_VISUAL_TERRAIN",
+      "from": "01",
+      "to": "03",
+      "widthMeters": 2.4,
+      "maxPermittedGridSegmentGrade": 0.3,
+      "projectedToVisibleR58AndR63Surfaces": true,
+      "sourceGridNodes": 110,
+      "searchExpandedNodes": 5772,
+      "pathCount": 1,
+      "carRoadsToSixPeaks": 0,
+      "falseSuspendedBridgePaths": 0,
+      "unprovenRouteSegmentsHidden": false,
+      "walkableNavmeshPassed": false,
+      "maxMeasuredSmoothedGrade": 0.594,
+      "unsurveyedSteepSegments": 0,
+      "segmentsRequiringActualStairsAndSurvey": 126,
+      "lengthMeters": 6481.37,
+      "routePointCount": 437,
+      "actualSolidStoneStairTreads": 3535,
+      "actualSegmentedStairSpans": 126,
+      "stairCorridorTotalMeters": 1800.45,
+      "maxUnsteppedFootTrailGrade": 0.24,
+      "maxUnsteppedGradeHardLimit": 0.24,
+      "stairEngineeringAndPlayerCollisionPending": true,
+      "pathStyle": "GROUND_FOLLOWING_FOOT_TRAIL_AND_ACTUAL_STONE_STAIR_TREADS",
+      "realSampledPathPointsXYZ": [
+        [
+          0,
+          0.68,
+          2880.56
+        ],
+        [
+          -179.47,
+          174.54,
+          1698.3
+        ],
+        [
+          -229.86,
+          402.92,
+          779.17
+        ],
+        [
+          -761.72,
+          603.99,
+          -413.19
+        ],
+        [
+          0,
+          800.68,
+          -566.67
+        ]
+      ],
+      "actualStoneStairFocusWorldXYZ": [
+        -230.43,
+        404.6,
+        773.1
+      ]
+    },
+    "roadNetworkAllSixPeaksConnected": false,
+    "summitSitesDisplaced": false,
+    "realWorldDEMUsed": true,
+    "collisionNavmeshCertified": false,
+    "geologicalModelApproved": false,
+    "sourceArtApproved": false,
+    "releaseReady": false
+  },
   "renderedByRealChrome": true,
   "realGPUCertified": false,
   "originalArtworkApproved": false,
@@ -10,29 +115,29 @@
   "frames": {
     "whole-mainland-natural-on": {
       "filename": "R90-SIX-REGION-whole-mainland-natural-on.png",
-      "bytes": 566558,
-      "sha256": "d0897eed5f99f55a0e05769715de54325c272c13e16761eebd325d15441fd87b",
+      "bytes": 567307,
+      "sha256": "a9fc726b109543ecca4a0dcfa716e2561b03f5683f73044d9d481ceee4f2ab47",
       "width": 1774,
       "height": 887
     },
     "whole-mainland-old-dome-ridges": {
       "filename": "R90-SIX-REGION-whole-mainland-old-dome-ridges.png",
-      "bytes": 581356,
-      "sha256": "74b5fb8174d4403817d494c995bb3e15e594cd83e1d228219bc1762c7a36c814",
+      "bytes": 581351,
+      "sha256": "d08dd30543cf215fe74f77ba1642eee758006ecf287aa07566b95b05812ad56a",
       "width": 1774,
       "height": 887
     },
     "narrow-footpath-natural-on": {
       "filename": "R90-SIX-REGION-narrow-footpath-natural-on.png",
-      "bytes": 767043,
-      "sha256": "89b18004ff40c28e0d4235fca5fad8ad3118564420637a8396c0566cbb4c3e87",
+      "bytes": 331417,
+      "sha256": "fd62a6f86aa6725ecd364686431aec57750823848084a626925d990591a6e9e6",
       "width": 1774,
       "height": 887
     },
     "narrow-footpath-old-dome-ridges": {
       "filename": "R90-SIX-REGION-narrow-footpath-old-dome-ridges.png",
-      "bytes": 679715,
-      "sha256": "82c6faa89779f44d778dd3f0841068749f412e90cb9b02cccf22096500450935",
+      "bytes": 241869,
+      "sha256": "0fcba1421013fe67c8c96e6a36ce1b4db5e111d87f9ab9de9ba5e2fb9f26e0ff",
       "width": 1774,
       "height": 887
     }
@@ -64,26 +169,26 @@
     },
     "narrow-footpath-natural-on": {
       "eye": [
-        1150,
-        1250,
-        1980
+        -85.43000000000004,
+        494.6,
+        943.1
       ],
       "target": [
-        0,
-        320,
-        1050
+        -230.43,
+        406.6,
+        773.1
       ]
     },
     "narrow-footpath-old-dome-ridges": {
       "eye": [
-        1150,
-        1250,
-        1980
+        -85.43000000000006,
+        494.6,
+        943.1
       ],
       "target": [
-        0,
-        320,
-        1050
+        -230.43,
+        406.6,
+        773.1
       ]
     },
     "publicControlOff": {

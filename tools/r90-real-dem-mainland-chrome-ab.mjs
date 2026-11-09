@@ -6,9 +6,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-const port=Number(process.env.R90_CDP_PORT||19385);
+const port=Number(process.env.R90_CDP_PORT||19427);
 const url=process.env.R90_SCENE_URL||
- 'http://127.0.0.1:4485/real3d/art/blueprint-r89/viewer.html?area=all&central=C';
+ 'http://127.0.0.1:4589/real3d/art/blueprint-r90/viewer.html?mainland=1&clouds=0&central=C';
 const out=process.env.R90_REPORT_DIR||'/tmp/qy-r88-whole-world-qa';
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function assert(x,message){if(!x)throw Error('R90 whole world QA: '+message);}
@@ -64,16 +64,40 @@ try{
   return resp.result.value;
  }
  let ready=false;
- for(let i=0;i<120;i++){
+ for(let i=0;i<500;i++){
   await delay(300);
   ready=await evaluate('Boolean(window.__qingyunR90?.report().trueWebGLRunning)').catch(()=>false);
   if(ready)break;
  }
- assert(ready,'real full 3D world failed to load');
+ if(!ready){
+  const info={
+   url:await evaluate('location.href').catch(e=>String(e)),
+   title:await evaluate('document.title').catch(e=>String(e)),
+   readyState:await evaluate('document.readyState').catch(e=>String(e)),
+   scripts:await evaluate('Array.from(document.scripts).map(s=>({src:s.src,type:s.type}))').catch(e=>String(e)),
+   status:await evaluate("document.getElementById('status')?.textContent").catch(e=>String(e)),
+   exists:await evaluate('Boolean(window.__qingyunR90)').catch(e=>String(e)),
+   body:await evaluate('document.body?.innerText?.slice(0,700)').catch(e=>String(e)),
+   errors:page.events
+  };
+  console.error('R90_PUBLIC_LOAD_DIAGNOSTIC',JSON.stringify(info,null,2));
+  throw Error('real full 3D world failed to load');
+ }
+
  const api='window.__qingyunR90';
  await evaluate(api+'.setMotionTime(0)');
  const initial=await evaluate(api+'.report()');
  assert(initial.mapId==='QY-GEOGRAPHY-001','world authoritative map moved');
+ assert(initial.r90Mainland.terrainGeneration==='WUDANG_SRTM_SKADI_N32E111_ACTUAL_DEM' &&
+  initial.r90Mainland.realWorldDEMUsed===true &&
+  initial.r90Mainland.sourceR58Unmodified===true,
+  'public terrain did not load real Wudang elevation grid');
+ assert(initial.r90Mainland?.actualFootpath?.pathCount===1 &&
+  initial.r90Mainland.actualFootpath.actualSolidStoneStairTreads>100 &&
+  initial.r90Mainland.actualFootpath.maxUnsteppedFootTrailGrade<=.24 &&
+  initial.r90Mainland.actualFootpath.walkableNavmeshPassed===false &&
+  Array.isArray(initial.r90Mainland.actualFootpath.actualStoneStairFocusWorldXYZ),
+  'R90 visual narrow trail+real masonry tread regression');
  assert(initial.r90MainlandEnabled===true &&
   initial.r89NaturalRock?.physicallyContiguousCoherentMassifs===3 &&
   initial.r89NaturalRock?.totalLooseFloatingRockMeshesCreated===0 &&
@@ -109,7 +133,7 @@ try{
  assert(initial.worldJourney.path.length===8,'world→six regions→world tour missing');
  assert(!initial.notOfficialArtwork===false || initial.notOfficialArtwork===true,
    'art source approval must not be invented');
- const report={revision:'R88',mapId:initial.mapId,
+ const report={revision:'R90',mapId:initial.mapId,actualMainland:initial.r90Mainland,
   renderedByRealChrome:true,realGPUCertified:false,
   originalArtworkApproved:false,
   sourceGeometryPreserved:true,sixWorldSitesVerified:6,
