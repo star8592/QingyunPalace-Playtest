@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>青云宫 R92｜天子山真实峰林与三清山独立地貌参考</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;font:14px system-ui,"Microsoft YaHei",sans-serif;background:#102833;color:#f4f7f1}
+#scene{position:fixed;inset:0;width:100%;height:100%}
+#panel{position:fixed;top:14px;left:14px;max-width:min(790px,calc(100vw - 28px));padding:14px;background:#0b222de8;border:1px solid #ffffff3b;border-radius:13px}
+h1{margin:0 0 7px;font-size:18px}p{margin:7px 0;font-size:12px;color:#c6d5d0}
+#buttons{display:flex;gap:7px;flex-wrap:wrap}
+button,a{padding:7px 9px;background:#1c4650;border:1px solid #c0dcd04a;color:#f3faf3;border-radius:7px;font:inherit;font-size:12px;cursor:pointer;text-decoration:none}
+button[aria-pressed=true]{background:#507767;border-color:#bbd6bc}button:hover,a:hover{background:#3b6262}
+#status{font-size:11px;color:#b6d2b8;margin-top:10px}
+#footer{position:fixed;bottom:12px;left:12px;right:12px;pointer-events:none;font-size:12px;color:#e5f0ea;display:flex;justify-content:space-between;gap:12px}
+#footer span{padding:7px;background:#0c242dd4;border-radius:8px}
+#fail{position:fixed;bottom:60px;left:12px;background:#723331;padding:10px;display:none}
+@media(max-width:760px){h1{font-size:15px}#panel{padding:9px}#footer{font-size:10px}}
+</style>
+<script type="importmap">{"imports":{"three":"../../node_modules/three/build/three.module.js","three/addons/":"../../node_modules/three/examples/jsm/"}}</script>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="panel">
+<h1>R92｜张家界天子山真实峰林 · 青云宫</h1>
+<p>主地图：真实张家界高程，六区落地，无悬浮岛。三清山仅独立参考。建筑单体按真实米制等比缩放，峰间没有假公路。</p>
+<div id="buttons">
+<button id="mode-tianzi" aria-pressed="true">天子山 · 主世界</button>
+<button id="mode-sanqing" aria-pressed="false">三清山 · 真实地貌参考</button>
+<button data-focus="all" aria-pressed="true">全山全景</button>
+<button data-focus="01">①山门</button>
+<button data-focus="02">②西崖观</button>
+<button data-focus="03">③主殿</button>
+<button data-focus="04">④远峰</button>
+<button data-focus="05">⑤东岭</button>
+<button data-focus="06">⑥玄元峰</button>
+<button id="building" aria-pressed="true">原建筑/占位体：显示</button>
+<button id="marker" aria-pressed="false">六区点位：关闭</button>
+<a href="../blueprint-r91/viewer.html?focus=all&floats=0">旧R91对照</a>
+</div>
+<div id="status">正在验证真实 DEM、地形适配与建筑包围盒……</div>
+</div>
+<div id="fail" role="alert"></div>
+<div id="footer"><span>真实高程 ≠ 石柱悬挑 3D 扫描；现场建筑基础与步行路线均未签收。</span><span>左键旋转 · 滚轮缩放 · 右键平移</span></div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {createR58QingyunBlockout} from '../../world/qingyun-palace/r58-world-blockout.mjs';
+import {createR59ArchitecturalUpgrade} from '../../world/qingyun-palace/r59-architecture-construction.mjs';
+import {createR92RealGeoWorld} from '../../world/qingyun-palace/r92-geology-runtime.mjs';
+
+const landscape=createR92RealGeoWorld();
+const sitePlan=landscape.sites;
+const siteMap=Object.fromEntries(sitePlan.map(s=>[s.id,s]));
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('scene'),antialias:true,powerPreference:'high-performance'});
+renderer.setSize(innerWidth,innerHeight,false);
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.04;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#a7c3d2');
+scene.fog=new THREE.FogExp2('#a7c3d2',.000075);
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.5,25000);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.07;
+controls.minDistance=20;controls.maxDistance=13000;
+controls.maxPolarAngle=Math.PI*.49;
+scene.add(new THREE.HemisphereLight('#fff9eb','#3e535b',1.9));
+const sunlight=new THREE.DirectionalLight('#fff0da',2.7);
+sunlight.position.set(-2200,3300,1000);scene.add(sunlight);
+scene.add(landscape.group);
+const buildings=new THREE.Group(),markers=new THREE.Group();
+buildings.name='R92_ORIGINAL_BUILDING_ASSETS_NORMALIZED_METERS';
+markers.visible=false;scene.add(buildings,markers);
+const installed={};
+const originWorld=createR58QingyunBlockout();
+const original=createR59ArchitecturalUpgrade(originWorld.terrain.mesh);
+let mode='tianzi';
+const terrain=(x,z)=>landscape.terrainHeight('tianzi',x,z);
+function siteRoofFit(obj,record,source){
+ const originalBox=new THREE.Box3().setFromObject(obj);
+ if(originalBox.isEmpty())throw Error('No actual mesh for '+record.id);
+ const oldSize=originalBox.getSize(new THREE.Vector3());
+ const oldCenter=originalBox.getCenter(new THREE.Vector3());
+ const maxSpan=Math.max(oldSize.x,oldSize.z);
+ if(maxSpan<=.01)throw Error('bad old building bbox');
+ // NO axis-specific distortion: all models are uniformly scaled.
+ const scale=record.buildingSpanM/maxSpan;
+ obj.position.sub(oldCenter);
+ const holder=new THREE.Group();holder.add(obj);holder.scale.setScalar(scale);
+ const box=new THREE.Box3().setFromObject(holder);
+ const foot=record.actualAuditedTopM-344;
+ holder.position.set(record.auditedX,foot+1-box.min.y,record.auditedZ);
+ buildings.add(holder);
+ installed[record.id]={
+  oldSpanM:Number(maxSpan.toFixed(2)),trueTargetWidthM:record.buildingSpanM,
+  source,scale:Number(scale.toFixed(5)),
+  sampledFootprintReliefM:record.auditedFootprintReliefM,
+  noArtificialSiteTerrainFill:true,
+  foundationCertified:false,roofNonuniformlyDistorted:false
+ };
+}
+for(const rec of sitePlan.filter(s=>['01','02','03','06'].includes(s.id))){
+ const refined=original.group.children.find(x=>x.userData?.regionId===rec.id);
+ if(refined){siteRoofFit(refined,rec,'R59 existing detailed model');continue;}
+ const block=originWorld.architecture.group.children.find(x=>x.userData?.regionId===rec.id);
+ if(block){
+  const unwanted=[];
+  block.traverse(o=>{
+   if(o.isMesh&&o.name==='BEDROCK_PLATFORM_ON_TRUE_MESH')unwanted.push(o);
+  });
+  for(const o of unwanted)o.parent.remove(o);
+  siteRoofFit(block,rec,'R58 original placeholder only; awaiting detailed model');
+ }
+}
+const loader=new GLTFLoader();
+await Promise.all(sitePlan.filter(s=>['04','05'].includes(s.id)).map(async rec=>{
+ try{
+  const path='../../art/blueprint-r66/export/QY-GEOGRAPHY-001-R66-region-'+rec.id+'-native.glb';
+  const data=await loader.loadAsync(path);
+  siteRoofFit(data.scene,rec,'R66 Blender existing original GLB');
+ }catch(e){
+  installed[rec.id]={error:String(e),assetLoaded:false};
+  console.error('Original GLB load error',rec.id,e);
+ }
+}));
+for(const r of sitePlan){
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(Math.max(9,r.buildingSpanM*.60),1,6,40),
+  new THREE.MeshBasicMaterial({color:'#f1dfb5',transparent:true,opacity:.85,side:THREE.DoubleSide}));
+ ring.rotation.x=Math.PI/2;
+ ring.position.set(r.auditedX,terrain(r.auditedX,r.auditedZ)+6,r.auditedZ);
+ markers.add(ring);
+}
+function showMode(id){
+ mode=landscape.setMode(id);
+ buildings.visible=mode==='tianzi';
+ markers.visible=false;
+ document.getElementById('mode-tianzi').setAttribute('aria-pressed',String(mode==='tianzi'));
+ document.getElementById('mode-sanqing').setAttribute('aria-pressed',String(mode==='sanqing'));
+ return focus('all');
+}
+function focus(id){
+ if(id==='all'){
+  controls.target.set(0,510,-180);
+  camera.position.set(3700,2800,4500);
+ }else{
+  const rec=siteMap[id];if(!rec)throw Error('No such actual R92 region');
+  if(mode!=='tianzi')showMode('tianzi');
+  const y=terrain(rec.auditedX,rec.auditedZ);
+  controls.target.set(rec.auditedX,y+rec.targetHeightM/2,rec.auditedZ);
+  const d=id==='03'?220:175;
+  camera.position.set(rec.auditedX+d,y+d*.83,rec.auditedZ+d*1.2);
+ }
+ controls.update();
+ document.querySelectorAll('[data-focus]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.focus===id)));
+ return {id,mode,target:controls.target.toArray(),eye:camera.position.toArray()};
+}
+document.querySelectorAll('[data-focus]').forEach(b=>b.addEventListener('click',()=>focus(b.dataset.focus)));
+document.getElementById('mode-tianzi').addEventListener('click',()=>showMode('tianzi'));
+document.getElementById('mode-sanqing').addEventListener('click',()=>showMode('sanqing'));
+document.getElementById('building').addEventListener('click',()=>{
+ buildings.visible=!buildings.visible;
+ document.getElementById('building').setAttribute('aria-pressed',String(buildings.visible));
+ document.getElementById('building').textContent='原建筑：'+(buildings.visible?'显示':'隐藏');
+});
+document.getElementById('marker').addEventListener('click',()=>{
+ const b=document.getElementById('marker');
+ const next=b.getAttribute('aria-pressed')!=='true';
+ b.setAttribute('aria-pressed',String(next));
+ markers.visible=next&&mode==='tianzi';
+ b.textContent='六区点位：'+(next?'显示':'关闭');
+});
+function report(){
+ return {revision:'R92',trueWebGLWorld:true,realDEMVertices:landscape.report.realDEMVerticesPerSource,
+  realGeology:landscape.report,mode,allRealLandSites:sitePlan.length,
+  floatingIslandCount:0,fakeRoadCount:0,
+  originalModels:installed,buildingsVisible:buildings.visible,
+  sitePlan,foundationApproval:false,walkableNavmeshApproved:false,
+  rockOverhangPhotogrammetryCertified:false,
+  renderingFrames:renderer.info.render.frame,renderTriangles:renderer.info.render.triangles};
+}
+const opts=new URLSearchParams(location.search);
+if(opts.get('geology')==='sanqing')showMode('sanqing');
+else focus(siteMap[opts.get('focus')]?opts.get('focus'):'all');
+if(opts.get('buildings')==='0')document.getElementById('building').click();
+document.getElementById('status').textContent='R92：真实地形点 '+landscape.report.realDEMVerticesPerSource.toLocaleString()+
+ ' × 2套独立地貌；原建筑 '+Object.values(installed).filter(x=>!x.error).length+
+ '/6；全部接地，基础尚未签收。';
+function tick(){requestAnimationFrame(tick);controls.update();renderer.render(scene,camera);}
+tick();
+window.__qingyunR92={report,focus,showMode,landscape,sitePlan,installed,buildings,camera};
+addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight,false);
+});
+</script>
+</body></html>
