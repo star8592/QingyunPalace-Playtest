@@ -1,0 +1,813 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>青云宫 R90 · 主体山脉与武当式古道 · 实时 3D</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#102331;color:#f1f0e9;font:14px system-ui,sans-serif}
+#canvas{display:block;width:100%;height:100%;outline:0}
+#masthead{position:absolute;top:15px;left:16px;z-index:8;background:#0e2438d9;border:1px solid #e3d0aa88;
+ border-radius:10px;padding:12px 16px;max-width:min(450px,calc(100vw - 32px))}
+h1{font-size:18px;margin:0 0 5px}#masthead p{font-size:12px;margin:2px 0;color:#d6e6df}
+#nav{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:11;
+ display:flex;gap:6px;max-width:calc(100vw - 18px);overflow-x:auto;padding:7px;
+ background:#0e2535e6;border:1px solid #cde3d592;border-radius:12px;white-space:nowrap}
+#nav button{background:#25445c;color:#fff;border:1px solid #b5d7d4aa;border-radius:8px;padding:10px;cursor:pointer;font-size:13px;white-space:nowrap}
+#nav button:hover,#nav button:focus-visible{background:#386f72;outline:2px solid #9ddaca}
+#nav button[aria-pressed="true"]{background:#cde0c9;color:#112b33}
+#status{position:absolute;left:18px;bottom:87px;z-index:7;background:#14293bd6;
+ border:1px solid #8ab6b099;border-radius:7px;padding:7px 11px;font-size:11px}
+#legend{position:absolute;right:16px;top:17px;max-width:290px;z-index:8;
+ background:#0e2636e5;border:1px solid #e6c58377;border-radius:9px;padding:12px}
+#legend h2{font-size:14px;margin:0 0 9px}
+#legend div{display:flex;gap:12px;align-items:center;padding:4px 0;font-size:12px}
+#legend b{color:#f2da9f;width:22px;font-size:13px}
+#tip{position:absolute;left:50%;bottom:7px;transform:translateX(-50%);color:#d9e8df;
+ font-size:11px;text-shadow:0 2px 5px #0f2a3a;white-space:nowrap}
+@media(max-width:660px){#masthead{top:8px;left:7px;padding:7px 10px}h1{font-size:14px}
+#masthead p{font-size:10px}#legend{top:80px;right:8px;max-width:180px;padding:8px}
+#legend div{font-size:10px;padding:2px 0}#nav{bottom:35px}#nav button{padding:9px;font-size:11px}
+#status{left:7px;bottom:103px;font-size:10px}#tip{font-size:10px;bottom:10px}}
+body.qa-clean #r85-world-toolbar,body.qa-clean #masthead,body.qa-clean #legend,body.qa-clean #nav,
+body.qa-clean #status,body.qa-clean #tip{display:none!important}
+#r85-world-toolbar{position:absolute;right:16px;top:14px;z-index:15;
+ background:#112939e8;border:1px solid #bdd6c4a3;border-radius:12px;padding:11px;
+ max-width:min(680px,calc(100vw - 30px));backdrop-filter:blur(12px)}
+#r85-world-toolbar strong{font-size:14px;letter-spacing:.02em}
+#r85-world-toolbar .actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+#r85-world-toolbar button{border:1px solid #b4d7d2a3;background:#254452;color:#eef7ef;
+ border-radius:8px;padding:8px 10px;cursor:pointer;font-size:12px}
+#r85-world-toolbar button:hover,#r85-world-toolbar button:focus-visible{
+ background:#517773;outline:2px solid #92d9b8}
+#r85-world-toolbar #r85-chapter{font-size:12px;color:#d9e9de;margin-left:8px}
+#r85-world-toolbar #r85-caption{font-size:11px;color:#aac3b9;margin-top:5px}
+body:not(.r85-advanced) #nav,body:not(.r85-advanced) #legend,
+body:not(.r85-advanced) #tip{display:none}
+@media(max-width:660px){
+ #r85-world-toolbar{top:auto;bottom:11px;left:8px;right:8px;max-width:none;padding:8px}
+ #r85-world-toolbar .actions{gap:3px}
+ #r85-world-toolbar button{padding:7px 8px;font-size:11px}
+ body.r85-advanced #nav{bottom:104px}
+}
+</style>
+<script type="importmap">{"imports":{
+ "three":"../../node_modules/three/build/three.module.js",
+ "three/addons/":"../../node_modules/three/examples/jsm/"
+}}</script></head>
+<body>
+<canvas id="canvas" aria-label="青云宫六大固定分区，单一真实三维地貌，可旋转、平移、缩放和聚焦"></canvas>
+<header id="masthead"><h1>青云宫 R90 · 武当真实高程重塑整个主山脉</h1>
+<p>固定施工地图 QY-GEOGRAPHY-001 · 东西7.5km × 南北6.8km</p>
+<p>六峰权威坐标不变 · ⑥④⑤已建真实封闭浮峰及地形谷底 · 六区独立建筑群扩展 · 原画仍未审批</p></header>
+<section id="legend" aria-label="六区域规划"><h2>统一地理索引</h2>
+<div><b>①</b> 青岚山门　+0 m</div>
+<div><b>②</b> 西崖听瀑亭　+520 m</div>
+<div><b>③</b> 青云宫主殿　+800 m</div>
+<div><b>④</b> 远峰道宫　+1,200 m</div>
+<div><b>⑤</b> 东岭配殿　+1,140 m</div>
+<div><b>⑥</b> 云顶玄宫　+1,730 m</div>
+<div style="color:#a5b7b9">金线：规划路线，不代表已建好的桥</div></section>
+<div id="status" aria-live="polite">正在装载青云宗完整世界……</div>
+<section id="r85-world-toolbar" aria-label="青云宗全域游览">
+ <strong>青云宫 R90 · 真正的山脊、峡谷和小路</strong><span id="r85-chapter">六峰已统一定位</span>
+ <div class="actions">
+  <button id="r85-play">▶ 自动巡游</button>
+  <button id="r85-pause">暂停</button>
+  <button data-r85-stop="all">全图</button>
+  <button data-r85-stop="01">①山门</button>
+  <button data-r85-stop="02">②听瀑</button>
+  <button data-r85-stop="03">③主殿</button>
+  <button data-r85-stop="04">④远峰</button>
+  <button data-r85-stop="05">⑤东岭</button>
+  <button data-r85-stop="06">⑥玄宫</button>
+  <button id="r90-mainland-toggle">R90 主体山脉：新版（点此对照旧版）</button>
+  <button id="r90-mainland-camera">整座主山脉 · 全景</button>
+  <button id="r90-path-camera">沿山登顶 · 小路特写</button>
+  <button id="r89-natural-toggle">R89 悬浮岩峰：开</button>
+  <button data-r89-massif="04">④远峰全山</button>
+  <button data-r89-massif="05">⑤东岭全山</button>
+  <button data-r89-massif="06">⑥玄宫全山</button>
+  <button id="r88-courts-toggle">R88 建筑台基切换</button>
+  <button id="r87-composition-toggle">R87：清爽大殿（开）</button>
+  <button data-r87-palace="04">④主殿气势</button>
+  <button data-r87-palace="05">⑤主殿气势</button>
+  <button data-r87-palace="06">⑥主殿气势</button>
+  <button id="r86-stage-toggle">三座岩峰：开</button>
+  <button data-r86-profile="04">④西峰完整侧影</button>
+  <button data-r86-profile="05">⑤东岭完整侧影</button>
+  <button data-r86-profile="06">⑥玄宫完整侧影</button>
+  <button id="r85-advanced">详细控制</button>
+ </div>
+ <div id="r85-caption">左键旋转 · 滚轮缩放 · 右键平移。R90主体山脉来自武当SRTM高程采样，仅展示一条2.4米宽的步行小路，不再连六条大路；尚未通过真实通行碰撞验收。</div>
+</section>
+<nav id="nav" aria-label="六个固定区域相机导航">
+<button id="all" aria-pressed="true">全图</button>
+<button id="area-01">① 山门</button>
+<button id="area-02">② 听瀑亭</button>
+<button id="area-03">③ 主殿</button>
+<button id="area-04">④ 远峰</button>
+<button id="area-05">⑤ 东岭</button>
+<button id="area-06">⑥ 玄宫</button>
+<button id="panMode" aria-pressed="false">模式：旋转</button>
+<button id="detailMode" aria-pressed="true">建筑：R59细化</button>
+<button id="artMode" aria-pressed="true">美术：R61增强</button>
+<button id="refineMode" aria-pressed="true">精雕：R62增强</button>
+<button id="masterMode" aria-pressed="true">材质地貌：R63增强</button>
+<button id="completeMode" aria-pressed="true">六区实模：R64</button>
+<button id="nativeMode" aria-pressed="true">原生DCC：R65 GLB</button>
+<button id="sculptMode" aria-pressed="true">精雕：R66 Blender</button>
+<button id="cloudMode" aria-pressed="true">云海：R66分层</button>
+<button id="floatingMode" aria-pressed="true">浮峰：R68真实离地</button>
+<button id="ensembleMode" aria-pressed="true">建筑群：R68扩展</button>
+<button id="heritageMode" aria-pressed="true">③屋檐：C 真实做旧</button>
+<button id="heritageCamera">③西厢精修特写</button>
+<button id="heritageMacro">③瓦件近景细察</button>
+<button id="centralRoofMode" aria-pressed="true">③屋面：R81保留版 C</button>
+<button id="centralRoofCamera">③中央主殿全景</button>
+<button id="centralTileMacro">③中央主殿瓦件近景</button>
+<button id="floatingCamera">⑥浮峰整体审阅</button>
+<button id="waterMode" aria-pressed="true">天河：开</button>
+<button id="forestMode" aria-pressed="true">树林：开</button>
+<button id="geologyMode" aria-pressed="true">岩层：开</button>
+<button id="causewayMode" aria-pressed="true">栈道：开</button>
+</nav>
+<div id="tip">左键旋转 / 右键平移 / 滚轮缩放 · B山门主殿对照 · V切换R60/R61 · C对比R61/R62 · M对比R62/R63材质与地貌 · K对比R63/R64两殿 · D对比R64网格/R65 GLB · E对比R65/R66 Blender雕饰 · N云海开关 · I浮峰开关 · O建筑群开关 · R轮换③真实古建屋檐／旧版 · Y③屋檐特写 · Z③实体瓦件微观 · U浮峰全身镜头 · H天河 / T树林 / G岩层 / J栈道 · P平移 · 1—6跳转区域 · 0全图 · F隐藏界面</div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {createR58QingyunBlockout,QY_BLUEPRINT}
+ from '../../world/qingyun-palace/r58-world-blockout.mjs';
+import {createR59ArchitecturalUpgrade} from '../../world/qingyun-palace/r59-architecture-construction.mjs';
+import {createR60WorldOverlays} from '../../world/qingyun-palace/r60-integrated-overlays.mjs';
+import {createR61QingyunVisualPass} from '../../world/qingyun-palace/r61-visual-pass.mjs';
+import {createR62QingyunSceneDetails} from '../../world/qingyun-palace/r62-visual-details.mjs';
+import {createR63QingyunArtMaster} from '../../world/qingyun-palace/r63-art-master.mjs';
+import {createR64CompleteSixPalaceArchitecture} from '../../world/qingyun-palace/r64-six-palace-integration.mjs';
+import {createR65NativeDCCRoundTrip} from '../../world/qingyun-palace/r65-native-blender-glb-runtime.mjs';
+import {createR66NativeDCCRoundTrip} from '../../world/qingyun-palace/r66-refined-dcc-runtime.mjs';
+import {createR66MountainCloudSea} from '../../world/qingyun-palace/r66-mountain-cloud-sea.mjs';
+import {createR68DetachedMassifs} from '../../world/qingyun-palace/r68-real-floating-massifs.mjs';
+import {createR68MonumentalPalaceCompositions} from '../../world/qingyun-palace/r68-monumental-palace-ensembles.mjs';
+import {createR71MainHallHeritageRoofs} from '../../world/qingyun-palace/r71-real-heritage-roof-integration.mjs';
+import {createR81MergedTrueHipTiles} from '../../world/qingyun-palace/r81-native-merged-hip-tile-integration.mjs';
+import {createR85SixRegionJourney} from '../../world/qingyun-palace/r85-six-region-world-journey.mjs';
+import {createR86MonumentalLandformsAndSkyGalleries} from '../../world/qingyun-palace/r86-monumental-massifs-and-ascents.mjs';
+import {createR87CleanMacroComposition} from '../../world/qingyun-palace/r87-clean-macro-composition.mjs';
+import {createR88MonumentalSummitCourts} from '../../world/qingyun-palace/r88-monumental-summit-courts.mjs';
+import {createR89TaoistNaturalMassifs} from '../../world/qingyun-palace/r89-taoist-ridge-massifs.mjs';
+import {createR90MainlandRidges} from '../../world/qingyun-palace/r90-mainland-ridges-footpaths.mjs';
+const params=new URLSearchParams(location.search);
+if(params.get('clean')==='1')document.body.classList.add('qa-clean');
+const renderer=new THREE.WebGLRenderer({
+ canvas:document.getElementById('canvas'),antialias:true,powerPreference:'high-performance'
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));
+renderer.setSize(innerWidth,innerHeight,false);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=.98;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#98b9cd');
+scene.fog=new THREE.FogExp2('#98b9cd',.00011);
+const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.8,30000);
+camera.position.set(5200,3750,5800);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.055;
+controls.minDistance=60;controls.maxDistance=14000;
+controls.maxPolarAngle=Math.PI*.485;
+controls.screenSpacePanning=true;
+controls.target.set(0,620,-160);
+controls.update();
+scene.add(new THREE.HemisphereLight('#fff8e2','#49606f',1.75));
+const sun=new THREE.DirectionalLight('#fff2d5',2.25);
+sun.position.set(-3200,6500,3500);scene.add(sun);
+const world=createR58QingyunBlockout();
+scene.add(world.group);
+const upgrade=createR59ArchitecturalUpgrade(world.terrain.mesh);
+scene.add(upgrade.group);
+const overlays=createR60WorldOverlays(world.terrain.mesh);
+scene.add(overlays.group);
+const visual=createR61QingyunVisualPass(world.terrain.mesh,overlays);
+scene.add(visual.group);
+const refinement=createR62QingyunSceneDetails(world.terrain.mesh,upgrade,overlays,visual);
+scene.add(refinement.group);
+const master=await createR63QingyunArtMaster({
+ world,r59:upgrade,r60:overlays,r61:visual,r62:refinement
+});
+scene.add(master.group);
+const complete=createR64CompleteSixPalaceArchitecture({
+ world,r59:upgrade,r61:visual,r63:master
+});
+scene.add(complete.group);
+let nativeDCC=null,nativeLoadError=null;
+try {
+ nativeDCC=await createR65NativeDCCRoundTrip({r64:complete});
+ scene.add(nativeDCC.group);
+} catch(error) {
+ nativeLoadError=String(error?.message??error);
+ console.error('R65 native DCC GLB import failed; R64 true model kept',error);
+}
+let sculptDCC=null,sculptLoadError=null;
+if(nativeDCC)try {
+ sculptDCC=await createR66NativeDCCRoundTrip({r65:nativeDCC});
+ scene.add(sculptDCC.group);
+} catch(error){
+ sculptLoadError=String(error?.message??error);
+ console.error('R66 physically sculpted native GLB failed; R65 stays available',error);
+}
+const cloudSea=createR66MountainCloudSea(world.terrain.mesh);
+scene.add(cloudSea.group);
+const detached=createR68DetachedMassifs({world,master});
+scene.add(detached.group);
+const ensembles=createR68MonumentalPalaceCompositions(world);
+scene.add(ensembles.group);
+const landforms=createR86MonumentalLandformsAndSkyGalleries({world,detached});
+scene.add(landforms.group);
+const composition=createR87CleanMacroComposition({
+ world,detached,refinement,ensembles,landforms,overlays,
+ visual,complete,nativeDCC,sculptDCC
+});
+const summitCourts=createR88MonumentalSummitCourts({
+ world,detached,ensembles,visual,complete,nativeDCC,sculptDCC
+});
+scene.add(summitCourts.group);
+const naturalMassifs=createR89TaoistNaturalMassifs({
+ detached,landforms,overlays,refinement,visual,world
+});
+const mainland=createR90MainlandRidges({world,master,detached,visual});
+scene.add(mainland.group);
+let landformsEnabled=true;
+let heritage=null,heritageError=null;
+try{
+ heritage=await createR71MainHallHeritageRoofs({world,ensembles});
+}catch(err){
+ heritageError=String(err?.message??err);
+ console.error('R71 real R70 V3 native GLB roof integration failed; R68 originals preserved',err);
+}
+function setHeritageMode(mode){
+ if(heritage)heritage.setMode(mode);
+ const current=heritage?.getMode()??'source';
+ const b=document.getElementById('heritageMode');
+ b.setAttribute('aria-pressed',String(heritage&&current!=='source'));
+ b.textContent='③屋檐：'+(current==='source'?'R68原版':current==='B'?'R70 CC0 材质做旧':'R70 C 几何＋材质做旧');
+ b.disabled=!heritage;
+ return getReport();
+}
+function cycleHeritageMode(){
+ const keys=['source','B','C'];const current=heritage?.getMode()??'source';
+ return setHeritageMode(keys[(keys.indexOf(current)+1)%keys.length]);
+}
+function setHeritageMacroCamera(){
+ if(!heritage)throw Error('No real R71 imported CC0 roof loaded');
+ setCameraMode('03');
+ scene.updateMatrixWorld(true);
+ const root=ensembles.group.children.find(c=>c.name.startsWith('R68_03_CEREMONIAL_ENSEMBLE_'));
+ const wing=root.children.find(c=>c.name.includes('WING_WEST'));
+ const target=wing.getWorldPosition(new THREE.Vector3());
+ camera.position.set(target.x+29,target.y+72,target.z+39);
+ controls.target.set(target.x,target.y+46,target.z);
+ camera.fov=43;camera.updateProjectionMatrix();controls.update();
+ document.getElementById('status').textContent='R71 青云宫西厢真实 CC0 PBR 瓦件及斗拱微观审核 · 按R实时切换';
+ return getReport();
+}
+function setHeritageCamera(){
+ if(!heritage)throw Error('No real R71 roof available');
+ setCameraMode('03');
+ scene.updateMatrixWorld(true);
+ const root=ensembles.group.children.find(c=>c.name.startsWith('R68_03_CEREMONIAL_ENSEMBLE_'));
+ const w=root.children.find(c=>c.name.includes('WING_WEST'));
+ const target=w.getWorldPosition(new THREE.Vector3());
+ camera.position.set(target.x+83,target.y+87,target.z+110);
+ controls.target.set(target.x,target.y+49,target.z);
+ camera.fov=43;camera.updateProjectionMatrix();controls.update();
+ document.getElementById('status').textContent='R71 ③青云宫西厢真实可编辑 CC0 PBR 筒瓦＋斗拱特写 · 可按R对照';
+ return getReport();
+}
+let centralRoof=null,centralRoofError=null;
+try{
+ centralRoof=await createR81MergedTrueHipTiles({world,upgrade});
+}catch(e){
+ centralRoofError=String(e?.message??e);
+ console.error('R72 actual 178m central hall PBR tile loader failed; original R59 roof intact',e);
+}
+function setCentralRoofMode(which){
+ if(centralRoof)centralRoof.setMode(which);
+ const current=centralRoof?.getMode()??'source';
+ const b=document.getElementById('centralRoofMode');
+ b.textContent='③主殿排瓦：'+(current==='source'?'旧R59':current==='B'?'B·沿坡水流实体瓦':'C·沿坡实体瓦＋旧化');
+ b.setAttribute('aria-pressed',String(centralRoof&&current!=='source'));
+ b.disabled=!centralRoof;
+ return getReport();
+}
+function cycleCentralRoofMode(){
+ const options=['source','B','C'];const current=centralRoof?.getMode()??'source';
+ return setCentralRoofMode(options[(options.indexOf(current)+1)%options.length]);
+}
+function setCentralRoofCamera(macro=false){
+ if(!centralRoof)throw Error('R72 central main hall actual GLB not loaded');
+ setCameraMode('03');
+ scene.updateMatrixWorld(true);
+ const root=upgrade.group.children.find(o=>o.userData.regionId==='03');
+ const p=root.getWorldPosition(new THREE.Vector3());
+ const offset=macro?[82,94,116]:[195,165,278];
+ const target=macro?[36,46,24]:[0,58,0];
+ camera.position.set(p.x+offset[0],p.y+offset[1],p.z+offset[2]);
+ controls.target.set(p.x+target[0],p.y+target[1],p.z+target[2]);
+ camera.fov=macro?40:48;camera.updateProjectionMatrix();controls.update();
+ document.getElementById('status').textContent=macro?
+  '③青云宫中央主殿真实CC0瓦件近景 · J切换新旧屋顶':
+  '③青云宫三层屋顶·正反排水坡及四条戗脊·旧R59/B/C排瓦真实对照';
+ return getReport();
+}
+let floatingEnabled=true,ensembleEnabled=true;
+function setFloatingMode(on){
+ const wanted=naturalMassifs.getEnabled();
+ if(wanted)naturalMassifs.setEnabled(false);
+ floatingEnabled=detached.setEnabled(on);
+ landforms.setEnabled(floatingEnabled&&landformsEnabled);
+ if(wanted&&floatingEnabled&&landformsEnabled)naturalMassifs.setEnabled(true);
+ document.getElementById('floatingMode').setAttribute('aria-pressed',String(floatingEnabled));
+ document.getElementById('floatingMode').textContent='浮峰：'+(floatingEnabled?'R68真实离地':'R66连续山体');
+ return getReport();
+}
+// R86 eye sits below the island's summit and looks through its REAL air gap,
+ // not another top-down screenshot hiding the 300m physical rock underside.
+function setR86MassifProfileCamera(id){
+ if(!['04','05','06'].includes(id))throw Error('R86 only three genuine floating peaks');
+ if(journey.report().active)journey.setActive(false);
+ const site=detached.report.sites.find(s=>s.regionId===id);
+ const r=QY_BLUEPRINT.regions.find(r=>r.id===id);
+ const hub=QY_BLUEPRINT.regions.find(r=>r.id==='03');
+ const theta=Math.atan2(hub.place[2]-r.place[2],hub.place[0]-r.place[0]);
+ const radius=site.topDiameterM/2;
+ const eyeRadius=radius*2.95;
+ const baseY=site.sourceTerrainBeforeExcavationY;
+ const eye=new THREE.Vector3(
+  r.place[0]+eyeRadius*Math.cos(theta+.27),
+  baseY-site.invertedHeightM*.77,
+  r.place[2]+eyeRadius*Math.sin(theta+.27));
+ const point=new THREE.Vector3(r.place[0],
+  baseY-site.invertedHeightM*.51,r.place[2]);
+ camera.position.copy(eye);
+ controls.target.copy(point);
+ camera.fov=46;
+ camera.near=.8;
+ camera.updateProjectionMatrix();
+ const old=controls.enableDamping;
+ controls.enableDamping=false;controls.update();controls.enableDamping=old;
+ return {eye:camera.position.toArray(),target:controls.target.toArray(),region:id,
+  trueMassifAirGapM:site.measuredAirGapM};
+}
+/**
+ * R87 architecture inspection camera: framed from existing actual R68
+ * summit, not the distant mountain UNDERside hiding palaces behind cliffs.
+ */
+function setR87PalaceFocusCamera(id){
+ if(!['04','05','06'].includes(id))throw Error('R87 focus id invalid');
+ if(journey.report().active)journey.setActive(false);
+ const r=QY_BLUEPRINT.regions.find(r=>r.id===id);
+ const island=detached.report.sites.find(s=>s.regionId===id);
+ const hub=QY_BLUEPRINT.regions.find(r=>r.id==='03');
+ const angle=Math.atan2(hub.place[2]-r.place[2],hub.place[0]-r.place[0]);
+ const rad=island.topDiameterM/2;
+ const mainY=island.sourceTerrainBeforeExcavationY;
+ const target=new THREE.Vector3(r.place[0],mainY+64,r.place[2]);
+ camera.position.set(r.place[0]+rad*1.55*Math.cos(angle+.32),
+  mainY+rad*.80,r.place[2]+rad*1.55*Math.sin(angle+.32));
+ controls.target.copy(target);
+ camera.fov=49;camera.near=.3;camera.updateProjectionMatrix();
+ const damp=controls.enableDamping;
+ controls.enableDamping=false;controls.update();controls.enableDamping=damp;
+ return {region:id,eye:camera.position.toArray(),target:target.toArray(),
+  highestArchitectureActualBaseY:mainY,originalSiteUnchanged:true};
+}
+function setR90MainlandEnabled(on){
+ mainland.setEnabled(on);
+ document.getElementById('r90-mainland-toggle').textContent=
+   'R90 主体山脉：'+(mainland.getEnabled()?'新版（点此看旧山）':'旧版圆包山（点此恢复新版）');
+ return getReport();
+}
+function setR90MainlandCamera(detail=false){
+ if(journey.report().active)journey.setActive(false);
+ const p=detail?new THREE.Vector3(1150,1250,1980):new THREE.Vector3(2250,1950,2250);
+ const t=detail?new THREE.Vector3(0,320,1050):new THREE.Vector3(0,720,-750);
+ camera.position.copy(p);controls.target.copy(t);
+ camera.fov=detail?48:48;camera.near=.4;camera.updateProjectionMatrix();
+ const old=controls.enableDamping;
+ controls.enableDamping=false;controls.update();controls.enableDamping=old;
+ document.getElementById('r85-chapter').textContent=detail?
+   '山脚至③主殿 · 2.4m窄步行古道':'整座主山脉 · 新旧起伏与山谷连通';
+ return {eye:p.toArray(),target:t.toArray(),focus:detail?'trail':'entire-mainland'};
+}
+function setR89NaturalMode(on){
+ const safe=!!on&&floatingEnabled&&landformsEnabled;
+ naturalMassifs.setEnabled(safe);
+ document.getElementById('r89-natural-toggle').textContent=
+  'R89 整体岩峰：'+(safe?'开（点此看旧版）':'旧版碎石（点此恢复）');
+ return getReport();
+}
+function setR89MassifCamera(id){
+ if(!['04','05','06'].includes(id))throw Error('R89 only fixed 3 peaks');
+ if(journey.report().active)journey.setActive(false);
+ const p=detached.report.sites.find(s=>s.regionId===id);
+ const x=p.worldAnchor[0],z=p.worldAnchor[2],top=p.sourceTerrainBeforeExcavationY;
+ const hub=QY_BLUEPRINT.regions.find(r=>r.id==='03').place;
+ const theta=Math.atan2(hub[2]-z,hub[0]-x);
+ const radius=p.topDiameterM*.5;
+ camera.position.set(x+radius*2.9*Math.cos(theta+.38),
+  top+radius*.70,z+radius*2.9*Math.sin(theta+.38));
+ controls.target.set(x,top-p.invertedHeightM*.18,z);
+ camera.fov=47;camera.near=.8;camera.updateProjectionMatrix();
+ const damping=controls.enableDamping;
+ controls.enableDamping=false;controls.update();controls.enableDamping=damping;
+ document.getElementById('r85-chapter').textContent=
+   id+' 峰体、山脊与悬浮空隙实景';
+ return {regionId:id,sourceR58TopY:top,realDetachedHeight:p.invertedHeightM,
+  noInventedCrossVoidPath:true};
+}
+function setR88CourtsEnabled(on){
+ summitCourts.setEnabled(on);
+ document.getElementById('r88-courts-toggle').textContent=
+  'R88：'+(summitCourts.getEnabled()?'新版台基（点击看旧版）':'旧版无台基（点击看新版）');
+ return getReport();
+}
+function setR87CompositionEnabled(on){
+ const active=summitCourts.getEnabled();
+ if(active)summitCourts.setEnabled(false);
+ composition.setEnabled(on);
+ if(active)summitCourts.setEnabled(true);
+ document.getElementById('r87-composition-toggle').textContent=
+  'R87：清爽大殿（'+(composition.getEnabled()?'开':'关')+'）';
+ return getReport();
+}
+function setR86StageEnabled(on){
+ const wanted=naturalMassifs.getEnabled();
+ if(wanted)naturalMassifs.setEnabled(false);
+ landformsEnabled=!!on;
+ landforms.setEnabled(floatingEnabled&&landformsEnabled);
+ if(wanted&&floatingEnabled&&landformsEnabled)naturalMassifs.setEnabled(true);
+ document.getElementById('r86-stage-toggle').textContent=
+  '三座岩峰与登天桥：'+(landformsEnabled?'开':'关');
+ return getReport();
+}
+function setEnsembleMode(on){
+ ensembleEnabled=ensembles.setEnabled(on);
+ document.getElementById('ensembleMode').setAttribute('aria-pressed',String(ensembleEnabled));
+ document.getElementById('ensembleMode').textContent='建筑群：'+(ensembleEnabled?'R68扩展':'R66原建筑');
+ return getReport();
+}
+function setFloatingCamera(id='06'){
+ if(!['04','05','06'].includes(id))throw Error('R68 floating camera only 04/05/06');
+ const r=siteById[id],x=r.anchor[0],z=r.anchor[2],y=r.actualVisibleSurfaceY;
+ const ds=detached.report.sites.find(a=>a.regionId===id);
+ // Low, distant cinematic profile explicitly reveals the air gap beneath
+ // the inverted floating massif instead of hiding its underside in top view.
+ const dist=ds.topDiameterM*3.1;
+ camera.position.set(x+dist*.60,y+ds.topDiameterM*.15,z+dist*1.03);
+ controls.target.set(x,y-ds.invertedHeightM*.54,z);
+ camera.fov=49;camera.updateProjectionMatrix();
+ controls.update();mode=id;
+ document.getElementById('status').textContent='R68 '+id+'悬浮仙山全身审阅 · 倒锥实模 / 空气间隙 '+ds.measuredAirGapM.toFixed(1)+'m · 与旧R66可按I对比';
+ return getReport();
+}
+let cloudEnabled=true;
+function setCloudMode(on){
+ cloudEnabled=Boolean(on);
+ cloudSea.group.visible=cloudEnabled;
+ const b=document.getElementById('cloudMode');
+ b.setAttribute('aria-pressed',String(cloudEnabled));
+ b.textContent='云海：'+(cloudEnabled?'R66分层':'隐藏');
+ return getReport();
+}
+let sculptEnabled=Boolean(sculptDCC);
+function setSculptMode(on){
+ sculptEnabled=Boolean(on)&&Boolean(sculptDCC);
+ syncNative();
+ const b=document.getElementById('sculptMode');
+ b.setAttribute('aria-pressed',String(sculptEnabled));
+ b.textContent='精雕：'+(sculptEnabled?'R66 Blender':'R65 原生');
+ b.disabled=!sculptDCC;
+ return getReport();
+}
+let nativeEnabled=Boolean(nativeDCC);
+function syncNative(){
+ if(!nativeDCC)return false;
+ const active=nativeEnabled&&completeEnabled&&masterEnabled&&artEnabled&&refinementEnabled;
+ nativeDCC.setReviewMode(active,{showR64WhenDisabled:completeEnabled});
+ if(sculptDCC){
+  const sculptureVisible=active&&sculptEnabled;
+  sculptDCC.setReviewMode(sculptureVisible,{showR65WhenDisabled:active});
+  if(!active)nativeDCC.group.visible=false;
+ }
+ return active;
+}
+function setNativeMode(on) {
+ nativeEnabled=Boolean(on)&&Boolean(nativeDCC);
+ syncNative();
+ const b=document.getElementById('nativeMode');
+ b.setAttribute('aria-pressed',String(nativeEnabled));
+ b.textContent='原生DCC：'+(nativeEnabled?'R65 GLB':'R64源模型');
+ b.disabled=!nativeDCC;
+ return getReport();
+}
+let completeEnabled=true;
+function setCompleteMode(on){
+ completeEnabled=Boolean(on);
+ complete.setReviewMode(completeEnabled);
+ syncNative();
+ const button=document.getElementById('completeMode');
+ button.setAttribute('aria-pressed',String(completeEnabled));
+ button.textContent='六区实模：'+(completeEnabled?'R64':'R63旧白模');
+ return getReport();
+}
+let masterEnabled=true;
+function setMasterMode(on){
+ masterEnabled=!!on;
+ master.setReviewMode(masterEnabled&&artEnabled&&refinementEnabled);
+ complete.setPBR(masterEnabled&&artEnabled&&refinementEnabled);
+ syncNative();
+ const b=document.getElementById('masterMode');
+ b.textContent='材质地貌：'+(masterEnabled?'R63增强':'R62旧版');
+ b.setAttribute('aria-pressed',String(masterEnabled));
+ return getReport();
+}
+let refinementEnabled=true;
+function setRefinementMode(on){
+ refinementEnabled=!!on;
+ refinement.setReviewMode(refinementEnabled&&artEnabled);
+ master.setReviewMode(masterEnabled&&refinementEnabled&&artEnabled);
+ syncNative();
+ const b=document.getElementById('refineMode');
+ b.textContent='精雕：'+(refinementEnabled?'R62增强':'R61旧版');
+ b.setAttribute('aria-pressed',String(refinementEnabled));
+ return getReport();
+}
+let artEnabled=true;
+const layerEnabled={hydrology:true,forest:true,geology:true,causeways:true};
+function setArtMode(enabled){
+ artEnabled=Boolean(enabled);
+ visual.setReviewMode(artEnabled);
+ refinement.setReviewMode(artEnabled&&refinementEnabled);
+ master.setReviewMode(masterEnabled&&artEnabled&&refinementEnabled);
+ syncNative();
+ for(const area of world.architecture.group.children){
+  if(['02','06'].includes(area.userData.regionId))area.visible=!artEnabled;
+ }
+ for(const key of ['forest','geology']){
+  overlays.overlays[key].group.visible=!artEnabled&&layerEnabled[key];
+ }
+ for(const key of ['hydrology','forest','geology'])
+  visual.setLayer(key,artEnabled&&layerEnabled[key]);
+ const b=document.getElementById('artMode');
+ b.textContent='美术：'+(artEnabled?'R61增强':'R60原型');
+ b.setAttribute('aria-pressed',String(artEnabled));
+ return getReport();
+}
+const overlayControl={hydrology:['waterMode','天河'],forest:['forestMode','树林'],geology:['geologyMode','岩层'],causeways:['causewayMode','栈道']};
+function setOverlay(layer,visible){
+ // Never re-enable the old floating road guides / scattered rock spikes
+ // while the R89 natural mountain study is selected.
+ const actualVisible=naturalMassifs.getEnabled()&&
+  ['geology','causeways'].includes(layer)?false:Boolean(visible);
+ layerEnabled[layer]=actualVisible;
+ overlays.setLayer(layer,actualVisible);
+ if(['forest','geology'].includes(layer))
+  overlays.overlays[layer].group.visible=!artEnabled&&actualVisible;
+ if(['hydrology','forest','geology'].includes(layer))
+  visual.setLayer(layer,artEnabled&&actualVisible);
+ if(['hydrology','geology'].includes(layer))
+  refinement.setLayer(layer,artEnabled&&refinementEnabled&&actualVisible);
+ const [id,label]=overlayControl[layer];
+ const button=document.getElementById(id);
+ button.setAttribute('aria-pressed',String(actualVisible));
+ button.textContent=label+'：'+(actualVisible?'开':'关');
+ return getReport();
+}
+let detailsOn=true;
+function showR59(enable){
+ detailsOn=!!enable;
+ upgrade.group.visible=detailsOn;
+ for(const area of world.architecture.group.children){
+  if(['01','03'].includes(area.userData.regionId))area.visible=!detailsOn;
+ }
+ const b=document.getElementById('detailMode');
+ b.textContent='建筑：'+(detailsOn?'R59细化':'R58白模');
+ b.setAttribute('aria-pressed',String(detailsOn));
+ return getReport();
+}
+const siteById=Object.fromEntries(world.sites.map(s=>[s.id,s]));
+let mode='all';
+const journey=createR85SixRegionJourney({camera,controls,world,onStateChange:state=>{
+ const chapter=document.getElementById('r85-chapter');
+ if(chapter)chapter.textContent=state.label;
+ const pause=document.getElementById('r85-pause');
+ if(pause)pause.textContent=state.paused?'继续':'暂停';
+}});
+function setCameraMode(id){
+ if(journey.report().active)journey.setActive(false);
+ if(id!=='all'&&!siteById[id])throw Error('Invalid R58 area index');
+ const prev=controls.enableDamping;controls.enableDamping=false;controls.update();
+ if(id==='all'){
+  camera.position.set(5200,3750,5800);
+  controls.target.set(0,620,-160);
+  camera.fov=48;
+ }else{
+  const r=siteById[id],p=r.anchor;
+  controls.target.set(p[0],r.actualVisibleSurfaceY+65,p[2]);
+  const close=(detailsOn&&['01','03'].includes(id))||(artEnabled&&['02','06'].includes(id))||(completeEnabled&&['04','05'].includes(id));
+  const near02=artEnabled&&id==='02';
+  const nearNew=completeEnabled&&['04','05'].includes(id);
+  const dx=near02?100:nearNew?116:(close?225:420),dy=near02?135:nearNew?103:(close?225:430),dz=near02?210:nearNew?184:(close?370:720);
+  if(nearNew)controls.target.set(p[0],r.actualVisibleSurfaceY+39,p[2]);
+  camera.position.set(p[0]+dx,r.actualVisibleSurfaceY+dy,p[2]+dz);
+  camera.fov=nearNew?43:(close?46:52);
+  // Architectural review must show the ENTIRE complex, not a close crop
+  // of the old main roof that hides both newly authored wings and pagodas.
+  if(ensembleEnabled&&['04','05'].includes(id)){
+   camera.position.set(p[0]+175,r.actualVisibleSurfaceY+165,p[2]+275);
+   controls.target.set(p[0],r.actualVisibleSurfaceY+56,p[2]);
+   camera.fov=48;
+  }
+  if(ensembleEnabled&&id==='06'){
+   camera.position.set(p[0]+210,r.actualVisibleSurfaceY+215,p[2]+330);
+   controls.target.set(p[0],r.actualVisibleSurfaceY+62,p[2]);
+   camera.fov=50;
+  }
+ }
+ camera.updateProjectionMatrix();
+ controls.update();controls.enableDamping=prev;
+ mode=id;
+ document.querySelectorAll('#nav button[id^="area-"],#nav #all').forEach(b=>
+  b.setAttribute('aria-pressed',String(b.id==='all'?id==='all':b.id==='area-'+id)));
+ document.getElementById('status').textContent=id==='all'?
+  '整体地图 7,500×6,800m · 六区固定 · 单一3D地形 · 规划路线仅供检查':
+  '区域 '+id+' · '+siteById[id].name+' · 海拔 '+siteById[id].anchor[1]+'m · 基座 '+siteById[id].actualVisibleSurfaceY.toFixed(2)+'m · '+(['04','05'].includes(id)?(completeEnabled?'R64独立三维建筑':'R58旧白模'):['02','06'].includes(id)?'R61已精建宫殿':(detailsOn?'R59宫殿实体':'R58白模'));
+ return getReport();
+}
+let pan=false;
+function setPan(enabled){
+ pan=Boolean(enabled);
+ controls.mouseButtons.LEFT=pan?THREE.MOUSE.PAN:THREE.MOUSE.ROTATE;
+ controls.mouseButtons.RIGHT=pan?THREE.MOUSE.ROTATE:THREE.MOUSE.PAN;
+ controls.touches.ONE=pan?THREE.TOUCH.PAN:THREE.TOUCH.ROTATE;
+ controls.touches.TWO=THREE.TOUCH.DOLLY_PAN;
+ const b=document.getElementById('panMode');
+ b.textContent='模式：'+(pan?'平移':'旋转');
+ b.setAttribute('aria-pressed',String(pan));
+ return getReport();
+}
+function getReport(){return{
+ revision:'R90',mapId:QY_BLUEPRINT.freezePolicy.stableMapId,
+ worldJourney:journey.report(),mainWorldOverRoofMicroTuning:true,
+ r86Enabled:landforms.getEnabled(),monumentalLandforms:landforms.report,
+ r87CompositionEnabled:composition.getEnabled(),r87Composition:composition.report,
+ r88CourtsEnabled:summitCourts.getEnabled(),r88Courts:summitCourts.report,
+ r89NaturalRockEnabled:naturalMassifs.getEnabled(),r89NaturalRock:naturalMassifs.report,
+ r90MainlandEnabled:mainland.getEnabled(),r90Mainland:mainland.report,
+ focusedArea:mode,pan,detailsOn,upgradedRegionIds:upgrade.report.upgradedRegionIds,architecture:upgrade.report,overlays:overlays.report,visual:visual.report,artEnabled,refinement:refinement.report,refinementEnabled,master:master.report,masterEnabled,complete:complete.report,completeEnabled,nativeEnabled,
+ nativeDCCLoaded:!!nativeDCC,nativeDCC:nativeDCC?.report??null,nativeLoadError,
+ sculptEnabled,sculptLoaded:!!sculptDCC,sculptDCC:sculptDCC?.report??null,sculptLoadError,
+ cloudEnabled,cloudSea:cloudSea.report,
+ floatingEnabled,floatingMassifs:detached.report,
+ ensembleEnabled,monumentalPalaces:ensembles.report,
+ heritageMode:heritage?.getMode()??'source',heritageLoaded:!!heritage,heritageError,
+ heritageProof:heritage?.report??null,heritageModeArtistApproved:false,
+ centralRoofMode:centralRoof?.getMode()??'source',centralRoofLoaded:!!centralRoof,
+ centralRoofError,centralRoofProof:centralRoof?.report??null,
+ centralRoofArtistApproved:false,
+ overlayVisible:Object.fromEntries(Object.keys(overlayControl).map(k=>[k,layerEnabled[k]])),eye:camera.position.toArray(),
+ target:controls.target.toArray(),trueWebGLRunning:renderer.info.render.frame>0,
+ rendererDrawCalls:renderer.info.render.calls,rendererTriangles:renderer.info.render.triangles,rendererFrame:renderer.info.render.frame,
+ stats:world.report,geometryIsGenuine3D:true,
+ notOfficialArtwork:true,notDeployed:true, old45DemoAbsent:true,
+ erroneousImageryAs2DBackground:false
+};}
+document.getElementById('r90-mainland-toggle').addEventListener('click',()=>setR90MainlandEnabled(!mainland.getEnabled()));
+document.getElementById('r90-mainland-camera').addEventListener('click',()=>setR90MainlandCamera(false));
+document.getElementById('r90-path-camera').addEventListener('click',()=>setR90MainlandCamera(true));
+document.getElementById('r89-natural-toggle').addEventListener('click',()=>{
+ setR89NaturalMode(!naturalMassifs.getEnabled());
+});
+document.querySelectorAll('[data-r89-massif]').forEach(button=>
+ button.addEventListener('click',()=>setR89MassifCamera(button.dataset.r89Massif)));
+document.getElementById('r88-courts-toggle').addEventListener('click',()=>setR88CourtsEnabled(!summitCourts.getEnabled()));
+document.getElementById('r87-composition-toggle').addEventListener('click',()=>setR87CompositionEnabled(!composition.getEnabled()));
+document.querySelectorAll('[data-r87-palace]').forEach(button=>
+ button.addEventListener('click',()=>setR87PalaceFocusCamera(button.dataset.r87Palace))
+);
+document.getElementById('r86-stage-toggle').addEventListener('click',()=>setR86StageEnabled(!landformsEnabled));
+document.querySelectorAll('[data-r86-profile]').forEach(button=>{
+ button.addEventListener('click',()=>setR86MassifProfileCamera(button.dataset.r86Profile));
+});
+document.getElementById('r85-play').addEventListener('click',()=>{
+ journey.setActive(!journey.report().active);
+});
+document.getElementById('r85-pause').addEventListener('click',()=>{
+ if(journey.report().active)journey.setPause(!journey.report().paused);
+});
+document.getElementById('r85-advanced').addEventListener('click',()=>{
+ const advanced=document.body.classList.toggle('r85-advanced');
+ document.getElementById('r85-advanced').textContent=advanced?'收起详细控制':'详细控制';
+});
+document.querySelectorAll('[data-r85-stop]').forEach(button=>{
+ button.addEventListener('click',()=>journey.select(button.dataset.r85Stop));
+});
+document.getElementById('all').addEventListener('click',()=>setCameraMode('all'));
+for(const r of QY_BLUEPRINT.regions)
+ document.getElementById('area-'+r.id).addEventListener('click',()=>setCameraMode(r.id));
+document.getElementById('panMode').addEventListener('click',()=>setPan(!pan));
+document.getElementById('detailMode').addEventListener('click',()=>showR59(!detailsOn));
+document.getElementById('artMode').addEventListener('click',()=>setArtMode(!artEnabled));
+document.getElementById('refineMode').addEventListener('click',()=>setRefinementMode(!refinementEnabled));
+document.getElementById('masterMode').addEventListener('click',()=>setMasterMode(!masterEnabled));
+document.getElementById('completeMode').addEventListener('click',()=>setCompleteMode(!completeEnabled));
+document.getElementById('nativeMode').addEventListener('click',()=>setNativeMode(!nativeEnabled));
+document.getElementById('sculptMode').addEventListener('click',()=>setSculptMode(!sculptEnabled));
+document.getElementById('cloudMode').addEventListener('click',()=>setCloudMode(!cloudEnabled));
+document.getElementById('floatingMode').addEventListener('click',()=>setFloatingMode(!floatingEnabled));
+document.getElementById('ensembleMode').addEventListener('click',()=>setEnsembleMode(!ensembleEnabled));
+document.getElementById('heritageMode').addEventListener('click',cycleHeritageMode);
+document.getElementById('heritageCamera').addEventListener('click',setHeritageCamera);
+document.getElementById('heritageMacro').addEventListener('click',setHeritageMacroCamera);
+document.getElementById('centralRoofMode').addEventListener('click',cycleCentralRoofMode);
+document.getElementById('centralRoofCamera').addEventListener('click',()=>setCentralRoofCamera(false));
+document.getElementById('centralTileMacro').addEventListener('click',()=>setCentralRoofCamera(true));
+document.getElementById('floatingCamera').addEventListener('click',()=>setFloatingCamera('06'));
+for(const [key,[id]] of Object.entries(overlayControl))
+ document.getElementById(id).addEventListener('click',()=>setOverlay(key,!overlays.overlays[key].group.visible));
+window.addEventListener('keydown',e=>{
+ if(e.target instanceof HTMLInputElement||e.ctrlKey||e.altKey||e.metaKey)return;
+ if(e.key==='0')setCameraMode('all');
+ if('123456'.includes(e.key))setCameraMode('0'+e.key);
+ if(e.key.toLowerCase()==='p')setPan(!pan);
+ if(e.key.toLowerCase()==='b')showR59(!detailsOn);
+ if(e.key.toLowerCase()==='v')setArtMode(!artEnabled);
+ if(e.key.toLowerCase()==='c')setRefinementMode(!refinementEnabled);
+ if(e.key.toLowerCase()==='m')setMasterMode(!masterEnabled);
+ if(e.key.toLowerCase()==='k')setCompleteMode(!completeEnabled);
+ if(e.key.toLowerCase()==='d')setNativeMode(!nativeEnabled);
+ if(e.key.toLowerCase()==='e')setSculptMode(!sculptEnabled);
+ if(e.key.toLowerCase()==='n')setCloudMode(!cloudEnabled);
+ if(e.key.toLowerCase()==='i')setFloatingMode(!floatingEnabled);
+ if(e.key.toLowerCase()==='o')setEnsembleMode(!ensembleEnabled);
+ if(e.key.toLowerCase()==='r')cycleHeritageMode();
+ if(e.key.toLowerCase()==='j')cycleCentralRoofMode();
+ if(e.key.toLowerCase()==='k')setCentralRoofCamera(false);
+ if(e.key.toLowerCase()==='v')setCentralRoofCamera(true);
+ if(e.key.toLowerCase()==='y')setHeritageCamera();
+ if(e.key.toLowerCase()==='z')setHeritageMacroCamera();
+ if(e.key.toLowerCase()==='u')setFloatingCamera('06');
+ const keys={h:'hydrology',t:'forest',g:'geology',j:'causeways'};
+ if(keys[e.key.toLowerCase()]){
+  const key=keys[e.key.toLowerCase()];
+  setOverlay(key,!layerEnabled[key]);
+ }
+ if(e.key.toLowerCase()==='f')document.body.classList.toggle('qa-clean');
+});
+window.addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight,false);
+});
+showR59(params.get('detail')!=='0');
+setArtMode(params.get('art')!=='0');
+setRefinementMode(params.get('refine')!=='0');
+setMasterMode(params.get('master')!=='0');
+setCompleteMode(params.get('complete')!=='0');
+setNativeMode(params.get('native')!=='0');
+setSculptMode(params.get('sculpt')!=='0');
+setCloudMode(params.get('clouds')!=='0');
+setFloatingMode(params.get('float')!=='0');
+setEnsembleMode(params.get('ensemble')!=='0');
+setHeritageMode(['source','B','C'].includes(params.get('heritage'))?params.get('heritage'):'C');
+setCentralRoofMode(['source','B','C'].includes(params.get('central'))?params.get('central'):'C');
+for(const key of Object.keys(overlayControl))setOverlay(key,params.get(key)!=='0');
+setR89NaturalMode(params.get('legacy')!=='1');
+setCameraMode(params.get('area')||'all');
+setPan(false);
+if(params.get('focus')==='04'||params.get('focus')==='05'||params.get('focus')==='06'){
+ setR87PalaceFocusCamera(params.get('focus'));
+}
+if(params.get('massif')==='04'||params.get('massif')==='05'||params.get('massif')==='06'){
+ setR89MassifCamera(params.get('massif'));
+}
+if(params.get('mainland')==='1')setR90MainlandCamera(false);
+if(params.get('mainland')==='0')setR90MainlandEnabled(false);
+if(params.get('journey')==='1')journey.setActive(true);
+let frame=0;
+let frozenMotion=null;
+function setMotionTime(seconds){frozenMotion=Number.isFinite(seconds)?seconds:null;return frozenMotion;}
+function tick(){
+ requestAnimationFrame(tick);
+ journey.update(performance.now());
+ controls.update();
+ const t=frozenMotion===null?performance.now()/1000:frozenMotion;
+ visual.setTime(t);
+ refinement.setTime(t);
+ cloudSea.setTime(t);
+ renderer.render(scene,camera);
+ frame++;
+}
+tick();
+window.__qingyunR90={report:getReport,landforms,composition,summitCourts,naturalMassifs,mainland,setR90MainlandEnabled,setR90MainlandCamera,setR89NaturalMode,setR89MassifCamera,setR88CourtsEnabled,setR87CompositionEnabled,setR87PalaceFocusCamera,setR86StageEnabled,setR86MassifProfileCamera,journey,setWorldTourActive:journey.setActive,setWorldTourPause:journey.setPause,selectWorldTourStop:journey.select,seekWorldTour:journey.seek,setCentralRoofMode,cycleCentralRoofMode,setCentralRoofCamera,centralRoof,setHeritageMode,cycleHeritageMode,setHeritageCamera,setHeritageMacroCamera,heritage,setCameraMode,setFloatingCamera,setPan,showR59,setOverlay,setArtMode,setRefinementMode,setMasterMode,setCompleteMode,setNativeMode,setSculptMode,setCloudMode,setFloatingMode,setEnsembleMode,setMotionTime,world,upgrade,overlays,visual,refinement,master,complete,nativeDCC,sculptDCC,cloudSea,detached,ensembles};
+</script></body></html>
