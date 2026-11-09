@@ -1,0 +1,232 @@
+{
+  "revision": "R91",
+  "source": "actual isolated Chrome CDP WebGL",
+  "initial": {
+    "revision": "R91-real-georeferenced",
+    "actualSRTMSourceTiles": 2,
+    "realDEMVertices": 92769,
+    "realDEMMainlandTriangles": 184320,
+    "exactGoldenHallLatitudeLongitude": [
+      32.40116,
+      111.0043
+    ],
+    "scaleHorizontal": 1,
+    "scaleVertical": 1,
+    "rotatedDegrees": 0,
+    "syntheticMountainRidges": 0,
+    "legacyR58HillsShown": 0,
+    "realRoadRoutesImported": 0,
+    "falseMainlandRoadMeshes": 0,
+    "siteGrounded": 3,
+    "siteFloating": 3,
+    "floatingPeaks": 3,
+    "floatingRockDebris": 0,
+    "detachedRockDebrisMeshes": 0,
+    "originalBuildingAssetsUsed": false,
+    "userArtApproved": false,
+    "navmeshReady": false,
+    "visualizedTrueMainland": true,
+    "realTime3D": true,
+    "loadedOriginalBuildingRegions": [
+      "01",
+      "03",
+      "04",
+      "05"
+    ],
+    "originalAssets": {
+      "01": {
+        "asset": "R59 original actual Qingyun model",
+        "geometryTriangles": 18732,
+        "sourceAssetUsed": true,
+        "siting": "on real DEM or DEM-derived fictional top, NOT final foundation"
+      },
+      "03": {
+        "asset": "R59 original actual Qingyun model",
+        "geometryTriangles": 30664,
+        "sourceAssetUsed": true,
+        "siting": "on real DEM or DEM-derived fictional top, NOT final foundation"
+      },
+      "04": {
+        "asset": "R66 authentic Blender GLB region 04",
+        "geometryTriangles": 34348,
+        "sourceAssetUsed": true,
+        "siting": "on real DEM or DEM-derived fictional top, NOT final foundation"
+      },
+      "05": {
+        "asset": "R66 authentic Blender GLB region 05",
+        "geometryTriangles": 51852,
+        "sourceAssetUsed": true,
+        "siting": "on real DEM or DEM-derived fictional top, NOT final foundation"
+      }
+    },
+    "originalBuildingsVisible": true,
+    "floatingVisible": true,
+    "markersVisible": false,
+    "sixRegions": {
+      "01": {
+        "id": "01",
+        "name": "青岚山门",
+        "kind": "grounded-gate",
+        "x": 46.875,
+        "z": 2880.5555555555557,
+        "demElevationM": 722,
+        "localReliefWithin60mM": 28.33,
+        "sitingMethod": "near legacy southern foothill, lowest relief filtered candidate; not real historic gate",
+        "gameTerrainY": -0.92,
+        "buildablePlatformCertified": false,
+        "walkableAccessCertified": false
+      },
+      "02": {
+        "id": "02",
+        "name": "西崖听瀑亭",
+        "kind": "grounded-side-pavilion",
+        "x": -2320.3125,
+        "z": 897.2222222222217,
+        "demElevationM": 1047,
+        "localReliefWithin60mM": 22.04,
+        "sitingMethod": "within west-side search region, local relief filtered; no invented real waterfall",
+        "gameTerrainY": 324.08,
+        "buildablePlatformCertified": false,
+        "walkableAccessCertified": false
+      },
+      "03": {
+        "id": "03",
+        "name": "青云宫主殿",
+        "kind": "grounded-golden-summit",
+        "x": 0,
+        "z": -550,
+        "demElevationM": 1553.82,
+        "localReliefWithin60mM": 30.02,
+        "sitingMethod": "fixed true Golden Hall georeference 32.40116N,111.00430E",
+        "gameTerrainY": 830.9,
+        "buildablePlatformCertified": false,
+        "walkableAccessCertified": false
+      },
+      "04": {
+        "id": "04",
+        "name": "远峰道宫",
+        "kind": "fantasy-detached-real-terrain-crown",
+        "x": -2050,
+        "z": -1910,
+        "demElevationM": 1106.48,
+        "gameTerrainY": 383.56,
+        "aboveRealTerrainGapM": 490,
+        "displaySummitY": 873.56,
+        "geologicSource": "top crown samples SAME true Wudang DEM; fictional extrusion below",
+        "noWalkableGroundConnection": true,
+        "noDetachedStoneDebris": true,
+        "structuralArtCertified": false
+      },
+      "05": {
+        "id": "05",
+        "name": "东岭配殿",
+        "kind": "fantasy-detached-real-terrain-crown",
+        "x": 2120,
+        "z": -1630,
+        "demElevationM": 945.61,
+        "gameTerrainY": 222.69,
+        "aboveRealTerrainGapM": 520,
+        "displaySummitY": 742.69,
+        "geologicSource": "top crown samples SAME true Wudang DEM; fictional extrusion below",
+        "noWalkableGroundConnection": true,
+        "noDetachedStoneDebris": true,
+        "structuralArtCertified": false
+      },
+      "06": {
+        "id": "06",
+        "name": "云顶玄宫",
+        "kind": "fantasy-detached-real-terrain-crown",
+        "x": 450,
+        "z": -2980,
+        "demElevationM": 857.59,
+        "gameTerrainY": 134.67,
+        "aboveRealTerrainGapM": 650,
+        "displaySummitY": 784.67,
+        "geologicSource": "top crown samples SAME true Wudang DEM; fictional extrusion below",
+        "noWalkableGroundConnection": true,
+        "noDetachedStoneDebris": true,
+        "structuralArtCertified": false
+      }
+    },
+    "rendererInfo": {
+      "frames": 3,
+      "calls": 966,
+      "triangles": 336332
+    },
+    "geographicCoordinateReferenceVerified": [
+      32.40116,
+      111.0043
+    ],
+    "screenshotIsActualWebGL": true,
+    "actualHistoricalRouteImportComplete": false,
+    "navigationCertified": false,
+    "artApproved": false
+  },
+  "frames": {
+    "all": {
+      "filename": "R91-REAL-all.png",
+      "bytes": 551081,
+      "width": 1774,
+      "height": 887,
+      "sha256": "6ddb4b7c03fa20392ac8d9adca0043a0874bc3c7612fbd43656877112c58d73d"
+    },
+    "03": {
+      "filename": "R91-REAL-03.png",
+      "bytes": 554466,
+      "width": 1774,
+      "height": 887,
+      "sha256": "5b88727b467d744079f6e83b205699ec433f01c76ebb1b85d207cd0e0b53e937"
+    },
+    "01": {
+      "filename": "R91-REAL-01.png",
+      "bytes": 366399,
+      "width": 1774,
+      "height": 887,
+      "sha256": "2adc0f4a43d84b82756cc87ed97e51d74c8f66a4f6a7c0273626847a09907b19"
+    },
+    "02": {
+      "filename": "R91-REAL-02.png",
+      "bytes": 425124,
+      "width": 1774,
+      "height": 887,
+      "sha256": "17b5e1e9e9dbcde686a8c4b1e4e45cb9be04d300591e407e47554a1caa10f8b3"
+    },
+    "04": {
+      "filename": "R91-REAL-04.png",
+      "bytes": 352336,
+      "width": 1774,
+      "height": 887,
+      "sha256": "16786a553cb6f8060fcab48a8d2d76393bdfa2a6e2ee1456b3953c3dd65e51bb"
+    },
+    "05": {
+      "filename": "R91-REAL-05.png",
+      "bytes": 514552,
+      "width": 1774,
+      "height": 887,
+      "sha256": "4f88783a17336693c626fde1c06fce5fb91e132863844db9dd4dc734aae975f4"
+    },
+    "06": {
+      "filename": "R91-REAL-06.png",
+      "bytes": 279676,
+      "width": 1774,
+      "height": 887,
+      "sha256": "c6da95d293032414da821ee2ddff83b97df03c36fc8ad65ff40cae4d9ee07562"
+    },
+    "float-off": {
+      "filename": "R91-REAL-float-off.png",
+      "bytes": 240196,
+      "width": 1774,
+      "height": 887,
+      "sha256": "a9f9026eccd584d519f16338f9ede9df68d2f97e7c1a21532e6f197990c1ca9e"
+    }
+  },
+  "states": {
+    "floatOff": false,
+    "floatOn": true,
+    "assetOff": false,
+    "assetOn": true
+  },
+  "errors": [],
+  "actualRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "verifiedFrameCount": 8
+}

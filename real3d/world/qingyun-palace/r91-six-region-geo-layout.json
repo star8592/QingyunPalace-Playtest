@@ -1,0 +1,103 @@
+{
+  "revision": "R91",
+  "baseTerrainModel": "REAL_GEODATA_UNALTERED_NO_PROCEDURAL_MAINLAND",
+  "goldenSummitLocation": [
+    32.40116,
+    111.0043
+  ],
+  "mainlandRegions": [
+    {
+      "id": "01",
+      "name": "青岚山门",
+      "kind": "grounded-gate",
+      "x": 46.875,
+      "z": 2880.5555555555557,
+      "demElevationM": 722.0,
+      "localReliefWithin60mM": 28.33,
+      "sitingMethod": "near legacy southern foothill, lowest relief filtered candidate; not real historic gate",
+      "gameTerrainY": -0.92,
+      "buildablePlatformCertified": false,
+      "walkableAccessCertified": false
+    },
+    {
+      "id": "02",
+      "name": "西崖听瀑亭",
+      "kind": "grounded-side-pavilion",
+      "x": -2320.3125,
+      "z": 897.2222222222217,
+      "demElevationM": 1047.0,
+      "localReliefWithin60mM": 22.04,
+      "sitingMethod": "within west-side search region, local relief filtered; no invented real waterfall",
+      "gameTerrainY": 324.08,
+      "buildablePlatformCertified": false,
+      "walkableAccessCertified": false
+    },
+    {
+      "id": "03",
+      "name": "青云宫主殿",
+      "kind": "grounded-golden-summit",
+      "x": 0,
+      "z": -550,
+      "demElevationM": 1553.82,
+      "localReliefWithin60mM": 30.02,
+      "sitingMethod": "fixed true Golden Hall georeference 32.40116N,111.00430E",
+      "gameTerrainY": 830.9,
+      "buildablePlatformCertified": false,
+      "walkableAccessCertified": false
+    }
+  ],
+  "fictionalDetachedSummits": [
+    {
+      "id": "04",
+      "name": "远峰道宫",
+      "kind": "fantasy-detached-real-terrain-crown",
+      "x": -2050,
+      "z": -1910,
+      "demElevationM": 1106.48,
+      "gameTerrainY": 383.56,
+      "aboveRealTerrainGapM": 490,
+      "displaySummitY": 873.56,
+      "geologicSource": "top crown samples SAME true Wudang DEM; fictional extrusion below",
+      "noWalkableGroundConnection": true,
+      "noDetachedStoneDebris": true,
+      "structuralArtCertified": false
+    },
+    {
+      "id": "05",
+      "name": "东岭配殿",
+      "kind": "fantasy-detached-real-terrain-crown",
+      "x": 2120,
+      "z": -1630,
+      "demElevationM": 945.61,
+      "gameTerrainY": 222.69,
+      "aboveRealTerrainGapM": 520,
+      "displaySummitY": 742.69,
+      "geologicSource": "top crown samples SAME true Wudang DEM; fictional extrusion below",
+      "noWalkableGroundConnection": true,
+      "noDetachedStoneDebris": true,
+      "structuralArtCertified": false
+    },
+    {
+      "id": "06",
+      "name": "云顶玄宫",
+      "kind": "fantasy-detached-real-terrain-crown",
+      "x": 450,
+      "z": -2980,
+      "demElevationM": 857.59,
+      "gameTerrainY": 134.67,
+      "aboveRealTerrainGapM": 650,
+      "displaySummitY": 784.67,
+      "geologicSource": "top crown samples SAME true Wudang DEM; fictional extrusion below",
+      "noWalkableGroundConnection": true,
+      "noDetachedStoneDebris": true,
+      "structuralArtCertified": false
+    }
+  ],
+  "actualGroundedSites": 3,
+  "floatingSites": 3,
+  "trueDEMHeightDifferencesMaintained": true,
+  "noOfficialWalkingPathImported": true,
+  "noFabricatedMainlandRouteCreated": true,
+  "groundedBuildingsNotYetFittedToDEM": true,
+  "readyForOriginalGLBArtPlacement": false
+}

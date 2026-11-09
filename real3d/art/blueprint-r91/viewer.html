@@ -1,0 +1,197 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>青云宫 R91 · 武当真实山体一比一底盘 · 3D 实景</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;font:14px system-ui,"Microsoft YaHei",sans-serif;background:#0b1d26;color:#eff5ef}
+#stage{position:fixed;inset:0;display:block;width:100%;height:100%}
+#bar{position:fixed;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;pointer-events:none}
+#controls{max-width:770px;background:#091c25dd;border:1px solid #ffffff2b;border-radius:12px;padding:14px;backdrop-filter:blur(9px);pointer-events:auto}
+h1{font-size:18px;line-height:1.35;margin:0 0 6px}p{margin:6px 0 10px;color:#c7d8d4;font-size:12px}
+#buttons{display:flex;gap:6px;flex-wrap:wrap;max-width:730px}
+button,a.link{padding:7px 11px;border:1px solid #ffffff3d;background:#173846;color:#edf7ef;border-radius:7px;cursor:pointer;text-decoration:none;font:inherit;font-size:12px}
+button[aria-pressed=true]{border-color:#b5d4b5;background:#3d5b52}
+a.link:hover,button:hover{background:#35636b}
+#live{margin:10px 0 0;color:#b9dcc8;font-size:11px}
+#legend{padding:10px 12px;background:#091c25c9;border:1px solid #ffffff2a;border-radius:10px;max-width:250px;pointer-events:auto;font-size:12px;line-height:1.8}
+#legend strong{color:#f9e8bc}
+#legend label{display:block}
+#fail{position:fixed;left:14px;bottom:18px;padding:10px;background:#482e2e;max-width:500px;display:none}
+#bottom{position:fixed;bottom:12px;left:14px;right:14px;display:flex;justify-content:space-between;pointer-events:none;gap:6px}
+#bottom span{max-width:540px;background:#091c25b8;border-radius:8px;padding:8px;color:#e2e8e1;font-size:12px}
+.qa-clean #legend,.qa-clean #bottom{display:none}
+@media(max-width:750px){#bar{flex-direction:column}#legend{max-width:100%}h1{font-size:15px}#controls{padding:8px}}
+</style>
+<script type="importmap">{"imports":{"three":"../../node_modules/three/build/three.module.js","three/addons/":"../../node_modules/three/examples/jsm/"}}</script>
+</head><body><canvas id="stage"></canvas>
+<div id="bar"><section id="controls">
+<h1>青云宫 R91 · 武当真实山脉底盘</h1>
+<p>真实金顶地理坐标；地形水平和高度均 1:1。陆地主山没有人造山包、连接宽路或伪造古道。</p>
+<div id="buttons">
+<button data-focus="all" aria-pressed="true">整座武当主山</button>
+<button data-focus="03">③真实金顶 · 主殿</button>
+<button data-focus="01">①山门位置</button>
+<button data-focus="02">②西崖区域</button>
+<button data-focus="04">④浮峰</button>
+<button data-focus="05">⑤浮峰</button>
+<button data-focus="06">⑥浮峰</button>
+<button id="float" aria-pressed="true">悬浮峰：开</button>
+<button id="asset" aria-pressed="true">原有建筑：开</button>
+<button id="pin" aria-pressed="false">区域定位：关</button>
+<a class="link" href="../blueprint-r90/viewer.html?mainland=1&amp;clouds=0">旧 R90 对照</a>
+</div>
+<div id="live">加载真实高程、六区布局与原有建筑资产中……</div>
+</section>
+<div id="legend"><strong>真实地形，不是模拟山脉</strong>
+<label>地貌：武当 SRTM 双瓦片高程</label><label>主峰：真实经纬度，无主山造峰</label>
+<label>六区：3个落地 + 3个悬浮</label><label>古道：未导入，绝不画假路</label>
+<label>左键旋转 · 滚轮缩放 · 右键平移</label>
+</div></div>
+<div id="fail" role="alert"></div>
+<div id="bottom"><span>地形为真实高程；建筑落位、浮峰下部为尚未签收的仙侠化适配，不是武当的真实建筑地图。</span><span>R91 · 研发体验版 · 不影响正式主站</span></div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {createR58QingyunBlockout,QY_BLUEPRINT} from '../../world/qingyun-palace/r58-world-blockout.mjs';
+import {createR59ArchitecturalUpgrade} from '../../world/qingyun-palace/r59-architecture-construction.mjs';
+import {createR91ExactWudangWorld,R91_LAYOUT,realHeight} from '../../world/qingyun-palace/r91-exact-wudang-world.mjs';
+const canvas=document.getElementById('stage');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setSize(innerWidth,innerHeight,false);
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#a1bed0');
+scene.fog=new THREE.FogExp2('#a1bed0',.000072);
+const camera=new THREE.PerspectiveCamera(46,innerWidth/innerHeight,.7,30000);
+camera.position.set(3500,2300,4200);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.minDistance=30;controls.maxDistance=15000;
+controls.enableDamping=true;controls.dampingFactor=.07;
+controls.maxPolarAngle=Math.PI*.495;
+controls.target.set(0,470,-450);controls.update();
+scene.add(new THREE.HemisphereLight('#fff9eb','#455962',2.0));
+const sun=new THREE.DirectionalLight('#fdf1dc',2.7);
+sun.position.set(-2600,4200,1500);scene.add(sun);
+const realWorld=createR91ExactWudangWorld();
+scene.add(realWorld.group);
+const byId={};
+for(const region of [...R91_LAYOUT.mainlandRegions,...R91_LAYOUT.fictionalDetachedSummits]){
+ byId[region.id]=region;
+}
+const markers=new THREE.Group();
+markers.name='R91_SITE_MARKERS_ONLY_NOT_GEOGRAPHIC_WORKAROUND';
+const ringMaterial=new THREE.MeshBasicMaterial({color:'#f1dbad',transparent:true,opacity:.82,side:THREE.DoubleSide});
+for(const site of Object.values(byId)){
+ const radius=site.kind.startsWith('grounded')?21:30;
+ const loop=new THREE.Mesh(new THREE.TorusGeometry(radius,1.4,6,48),ringMaterial);
+ loop.rotation.x=Math.PI/2;
+ loop.position.set(site.x,(site.displaySummitY??site.gameTerrainY)+5,site.z);
+ markers.add(loop);
+}
+markers.visible=false;scene.add(markers);
+const original=new THREE.Group();
+original.name='R91_SOURCE_QINGYUN_BUILDINGS_NOT_NEW_LOW_POLY';
+scene.add(original);
+const previousWorld=createR58QingyunBlockout();
+const oldArchitecture=createR59ArchitecturalUpgrade(previousWorld.terrain.mesh);
+const presentAssets=[];
+const results={};
+function place(obj,id,filename){
+ const place=byId[id];
+ const box=new THREE.Box3().setFromObject(obj),center=new THREE.Vector3();
+ box.getCenter(center);
+ if(box.isEmpty())throw Error('Missing actual geometric building '+id);
+ const reference=place.displaySummitY??place.gameTerrainY;
+ obj.position.x+=place.x-center.x;
+ obj.position.z+=place.z-center.z;
+ obj.position.y+=reference+3-box.min.y;
+ original.add(obj);
+ results[id]={asset:filename,geometryTriangles:0,sourceAssetUsed:true,
+  siting:'on real DEM or DEM-derived fictional top, NOT final foundation'};
+ obj.traverse(n=>{if(n.isMesh){
+  const geom=n.geometry;
+  results[id].geometryTriangles+=(geom.index?.count??geom.getAttribute('position').count)/3;
+ }});
+ presentAssets.push(id);
+}
+for(const id of ['01','03']){
+ const match=oldArchitecture.group.children.find(x=>x.userData?.regionId===id);
+ if(match)place(match,id,'R59 original actual Qingyun model');
+}
+const gltfLoader=new GLTFLoader();
+await Promise.all(['04','05'].map(async id=>{
+ try{
+  const url='../../art/blueprint-r66/export/QY-GEOGRAPHY-001-R66-region-'+id+'-native.glb';
+  const loaded=await gltfLoader.loadAsync(url);
+  place(loaded.scene,id,'R66 authentic Blender GLB region '+id);
+ }catch(e){
+  results[id]={error:String(e?.message??e),assetLoaded:false};
+  console.error('R91 genuine architectural asset unavailable',id,e);
+ }
+}));
+function focus(id='all'){
+ if(id==='all'){
+  controls.target.set(0,380,-600);
+  camera.position.set(3850,2800,4900);
+ }else{
+  const r=byId[id];if(!r)throw Error('Invalid R91 site '+id);
+  const y=r.displaySummitY??r.gameTerrainY;
+  const dist=id==='03'?480: id==='01'?350:560;
+  controls.target.set(r.x,y+40,r.z);
+  camera.position.set(r.x+dist,y+dist*.67,r.z+dist*1.1);
+ }
+ controls.update();
+ document.querySelectorAll('[data-focus]').forEach(b=>
+  b.setAttribute('aria-pressed',String(b.dataset.focus===id)));
+ return {focusId:id,target:controls.target.toArray(),eye:camera.position.toArray()};
+}
+document.querySelectorAll('[data-focus]').forEach(b=>
+ b.addEventListener('click',()=>focus(b.dataset.focus)));
+document.getElementById('float').addEventListener('click',()=>{
+ const on=realWorld.setFloat(!realWorld.floats.visible);
+ document.getElementById('float').textContent='悬浮峰：'+(on?'开':'关');
+ document.getElementById('float').setAttribute('aria-pressed',String(on));
+});
+document.getElementById('asset').addEventListener('click',()=>{
+ original.visible=!original.visible;
+ document.getElementById('asset').textContent='原有建筑：'+(original.visible?'开':'关');
+ document.getElementById('asset').setAttribute('aria-pressed',String(original.visible));
+});
+document.getElementById('pin').addEventListener('click',()=>{
+ markers.visible=!markers.visible;
+ document.getElementById('pin').textContent='区域定位：'+(markers.visible?'开':'关');
+ document.getElementById('pin').setAttribute('aria-pressed',String(markers.visible));
+});
+function report(){return {
+ ...realWorld.report,visualizedTrueMainland:true,realTime3D:true,
+ loadedOriginalBuildingRegions:presentAssets.slice().sort(),
+ originalAssets:results,originalBuildingsVisible:original.visible,
+ floatingVisible:realWorld.floats.visible,markersVisible:markers.visible,
+ sixRegions:byId,rendererInfo:{frames:renderer.info.render.frame,calls:renderer.info.render.calls,
+ triangles:renderer.info.render.triangles},
+ geographicCoordinateReferenceVerified:realWorld.report.exactGoldenHallLatitudeLongitude,
+ screenshotIsActualWebGL:true,
+ actualHistoricalRouteImportComplete:false,
+ navigationCertified:false, artApproved:false
+};}
+const u=new URLSearchParams(location.search);
+if(u.get('focus')&&byId[u.get('focus')])focus(u.get('focus'));
+else focus('all');
+if(u.get('floats')==='0')document.getElementById('float').click();
+if(u.get('assets')==='0')document.getElementById('asset').click();
+if(u.get('pins')==='1')document.getElementById('pin').click();
+document.getElementById('live').textContent=
+ '真实武当地形 '+realWorld.report.realDEMVertices.toLocaleString()+' 个高程点；已加载原有建筑 '+presentAssets.join('、')+'；地形未生成假山/假路。';
+function animate(){
+ requestAnimationFrame(animate);
+ controls.update();renderer.render(scene,camera);
+}
+animate();
+window.__qingyunR91={report,focus,realWorld,original,markers,controls,camera};
+window.addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight,false);
+});
+</script></body></html>

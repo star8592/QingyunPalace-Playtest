@@ -36,3 +36,10 @@ R90 不再用圆形等高山包+直线脊线为新地貌，而是从**武当山�
 
 ## R90 山路实测修正（2026-11-09）
 已用 A* 在实际 SRTM 派生地形寻找 01 山门至 03 主殿的窄路，路线约 6.48 km，宽度 2.4 m；不再使用 14 m 宽的车辆级道路。平缓路段坡度最高为 24%；126 个较陡路段改为 3,535 级有体积的石阶，石阶段总长约 1.80 km。道路与石阶按最终显示的 R58/R63 地表定位，避免被山体覆盖。**这属于三维美术与几何验证，尚未通过角色碰撞、石阶可行走性或 NavMesh 验收。** 参考 [真实浏览器截图和数据](evidence/r90-real-wudang-mainland/R90-WUDANG-DEMO-FINAL-CHROME-AB.jpg)。
+
+## R91 严格真实武当DEM底盘（独立候选）
+[实时打开 R91 真武当大山三维场景：默认隐藏待完善浮峰](real3d/art/blueprint-r91/viewer.html?focus=all&floats=0)
+
+[八张真实Chrome验收与四视图合成](evidence/r91-real-wudang/R91-TRUE-WUDANG-FOUR-VIEWS-ACTUAL-CHROME.jpg)
+
+地理源来自武当金顶两块真实SRTM瓦片，真北、1:1比例、无程序造峰；01/03/04/05接入原有3D建筑。浮峰下部与全部路径仍是待深化项目，不能宣称完成。详情参见R91-TRUE-WUDANG-ART-GATE.md。
