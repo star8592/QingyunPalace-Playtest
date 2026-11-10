@@ -1,0 +1,20 @@
+{
+  "samples": [
+    {
+      "source": "/home/master/projects/qingyun-r88-live-public-preview-20261109/real3d/art/blueprint-r95/assets/R95_SINGLE_PEAK_PALACE_ASSEMBLY_REVIEW.glb",
+      "vertices": 822620,
+      "distinctQuantizedPositions": 471783,
+      "polygons": 961890,
+      "positionSetSha256": "d6c0f14831662b47493126549859a9ee4e521b8bfc57e6e07514603f9d6c4392"
+    },
+    {
+      "source": "/home/master/projects/qingyun-r88-live-public-preview-20261109/real3d/art/blueprint-r96/assets/R96_CLIFF_ACCESS_PALACE_REAL_ASSETS.glb",
+      "vertices": 822622,
+      "distinctQuantizedPositions": 471783,
+      "polygons": 961890,
+      "positionSetSha256": "d6c0f14831662b47493126549859a9ee4e521b8bfc57e6e07514603f9d6c4392"
+    }
+  ],
+  "sameRoundedUniqueVertexPositionsAndFaceCount": true,
+  "note": "glTF roundtrip can split duplicate seam vertices; unique 3D positions and faces are compared"
+}

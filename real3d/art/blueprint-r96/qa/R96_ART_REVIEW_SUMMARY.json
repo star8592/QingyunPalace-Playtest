@@ -1,0 +1,42 @@
+{
+  "status": "ART_REVIEW_PENDING_NOT_NAVMESH_APPROVED",
+  "gpu": "RTX 5070 Ti Chromium / ANGLE Vulkan",
+  "meshStats": {
+    "meshes": 256,
+    "triangles": 2411762,
+    "textures": 27,
+    "extent": [
+      0.49,
+      1.02,
+      0.67
+    ]
+  },
+  "renderedViews": [
+    "three",
+    "front",
+    "right",
+    "back",
+    "top",
+    "focus_summit",
+    "focus_mid",
+    "focus_path",
+    "focus_pathdetail",
+    "palaces_off"
+  ],
+  "browserErrors": [],
+  "stoneStairs": 149,
+  "stoneRailings": 30,
+  "stonePosts": 13,
+  "realStoneCantileverSupportMeshes": 19,
+  "validRealRockSurfaceRadialRaycasts": 148,
+  "stairWaypoints": 149,
+  "maxConsecutiveStairSpacingSceneUnits": 0.017685018848948426,
+  "meanExteriorOffsetFromRockSceneUnits": 0.01075993288590604,
+  "originalRockGeometryVerifiedUnchanged": true,
+  "limitations": [
+    "Requires art review of paths, treads, railings and palace composition",
+    "Not walkability, collision or NPC route certified",
+    "One rock-surface raycast is interpolated from nearest valid sample",
+    "Still separate from playable world"
+  ]
+}

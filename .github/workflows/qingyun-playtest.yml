@@ -34,6 +34,10 @@ jobs:
           test ! -e _site/real3d/art/blueprint-r93
           test -s _site/real3d/art/blueprint-r94/assets/R94_ONE_PEAK_CHATGPT_IMAGE2MODEL_CC0_TREE_DRESS.glb
           test "$(head -c 4 _site/real3d/art/blueprint-r94/assets/R94_ONE_PEAK_CHATGPT_IMAGE2MODEL_CC0_TREE_DRESS.glb)" = glTF
+          test -s _site/real3d/art/blueprint-r96/viewer.html
+          test -s _site/real3d/art/blueprint-r96/assets/R96_CLIFF_ACCESS_PALACE_REAL_ASSETS.glb
+          test "$(head -c 4 _site/real3d/art/blueprint-r96/assets/R96_CLIFF_ACCESS_PALACE_REAL_ASSETS.glb)" = glTF
+          grep -q 'R96_ACCESS_' _site/real3d/art/blueprint-r96/viewer.html
           du -sh _site
       - name: Configure Pages
         uses: actions/configure-pages@v5
