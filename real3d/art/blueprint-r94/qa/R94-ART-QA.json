@@ -1,0 +1,20 @@
+{
+  "status": "ART_REVIEW_ONLY",
+  "source": "Original ChatGPT ImageGen art locked 2026-11-10",
+  "geometry_method": "Pixal3D image-to-3D (nonprocedural)",
+  "rock_triangles": 961890,
+  "mesh_count": 13,
+  "triangles": 2129666,
+  "textures": 12,
+  "trees": "4 manually placed nonprocedural authored Poly Haven CC0 trees",
+  "hardware_qa": "Chrome 157 RTX 5070 Ti ANGLE Vulkan",
+  "camera_views": [
+    "three",
+    "front",
+    "right",
+    "back",
+    "top"
+  ],
+  "javascript_exceptions": 0,
+  "production_approved": false
+}

@@ -51,3 +51,7 @@ R90 不再用圆形等高山包+直线脊线为新地貌，而是从**武当山�
 - [地貌与建筑实际不足](R92-TIANZI-SANQING-REAL-GEOLOGY-ART-REVIEW-20261110.md)
 
 六区建筑高程足迹筛选通过，主体山脉SRTM真实，但缺张家界砂岩柱体真实3D侧壁、悬挑、植被与建筑高精度承托。ART NO-GO，保留旧版R91和正式PlayMoru。
+## R94 单峰美术研究（可交互 3D）
+
+- [R94 真人工摆放崖松的单峰 WebGL 模型](real3d/art/blueprint-r94/viewer.html?view=three)
+- 母版为 2026-11-10 用户认可的原创仙山原画；真实图像转3D生成岩体、Blender调整并加入 CC0 三维崖松。模型仅供美术审阅，不代表正式游戏发布。

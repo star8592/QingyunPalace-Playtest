@@ -1,0 +1,46 @@
+name: Qingyun Palace — Static 3D Playtest
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: qingyun-pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build web-only static tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp index.html README.md .nojekyll _site/
+          rsync -a --exclude='*.blend' --exclude='*.py' --exclude='*.b64' --exclude='*.ply' --exclude='*.shape.bin' --exclude='*.post.bin' real3d/ _site/real3d/
+          rsync -a evidence/ _site/evidence/
+          test ! -e _site/real3d/art/blueprint-r93
+          test -s _site/real3d/art/blueprint-r94/assets/R94_ONE_PEAK_CHATGPT_IMAGE2MODEL_CC0_TREE_DRESS.glb
+          test "$(head -c 4 _site/real3d/art/blueprint-r94/assets/R94_ONE_PEAK_CHATGPT_IMAGE2MODEL_CC0_TREE_DRESS.glb)" = glTF
+          du -sh _site
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: './_site'
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
