@@ -43,3 +43,11 @@ R90 不再用圆形等高山包+直线脊线为新地貌，而是从**武当山�
 [八张真实Chrome验收与四视图合成](evidence/r91-real-wudang/R91-TRUE-WUDANG-FOUR-VIEWS-ACTUAL-CHROME.jpg)
 
 地理源来自武当金顶两块真实SRTM瓦片，真北、1:1比例、无程序造峰；01/03/04/05接入原有3D建筑。浮峰下部与全部路径仍是待深化项目，不能宣称完成。详情参见R91-TRUE-WUDANG-ART-GATE.md。
+
+## R92 张家界天子山+三清山独立参考场景（研发候选）
+- [真实 WebGL 试玩](real3d/art/blueprint-r92/viewer.html?focus=all)
+- [R92 实拍四视角拼图](evidence/r92-real-chrome/R92-Z890-ACTUAL-FOUR-VIEWS.jpg)
+- [完整9张截图的原始验收报告](evidence/r92-real-chrome/R92-TRUE-GEOLOGY-REAL-CHROME-REPORT.json)
+- [地貌与建筑实际不足](R92-TIANZI-SANQING-REAL-GEOLOGY-ART-REVIEW-20261110.md)
+
+六区建筑高程足迹筛选通过，主体山脉SRTM真实，但缺张家界砂岩柱体真实3D侧壁、悬挑、植被与建筑高精度承托。ART NO-GO，保留旧版R91和正式PlayMoru。

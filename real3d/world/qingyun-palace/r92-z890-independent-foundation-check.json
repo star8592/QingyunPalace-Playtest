@@ -1,0 +1,49 @@
+{
+  "source": "same source raw HGT SHA256, independent Z890 re-sample of 11x11 footprint",
+  "samplesPerSite": 121,
+  "results": [
+    {
+      "id": "01",
+      "recomputedMeters": 1.12,
+      "xpsReportedMeters": 1.12,
+      "differenceMeters": 0.0,
+      "underTwoMeters": true
+    },
+    {
+      "id": "02",
+      "recomputedMeters": 1.623,
+      "xpsReportedMeters": 1.623,
+      "differenceMeters": 0.0,
+      "underTwoMeters": true
+    },
+    {
+      "id": "03",
+      "recomputedMeters": 1.872,
+      "xpsReportedMeters": 1.872,
+      "differenceMeters": 0.0,
+      "underTwoMeters": true
+    },
+    {
+      "id": "04",
+      "recomputedMeters": 1.068,
+      "xpsReportedMeters": 1.068,
+      "differenceMeters": 0.0,
+      "underTwoMeters": true
+    },
+    {
+      "id": "05",
+      "recomputedMeters": 1.911,
+      "xpsReportedMeters": 1.911,
+      "differenceMeters": 0.0,
+      "underTwoMeters": true
+    },
+    {
+      "id": "06",
+      "recomputedMeters": 1.249,
+      "xpsReportedMeters": 1.249,
+      "differenceMeters": 0.0,
+      "underTwoMeters": true
+    }
+  ],
+  "allMeasuredUnder2m": true
+}
