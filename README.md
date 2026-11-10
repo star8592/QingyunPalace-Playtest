@@ -51,3 +51,12 @@ R90 不再用圆形等高山包+直线脊线为新地貌，而是从**武当山�
 - [地貌与建筑实际不足](R92-TIANZI-SANQING-REAL-GEOLOGY-ART-REVIEW-20261110.md)
 
 六区建筑高程足迹筛选通过，主体山脉SRTM真实，但缺张家界砂岩柱体真实3D侧壁、悬挑、植被与建筑高精度承托。ART NO-GO，保留旧版R91和正式PlayMoru。
+
+## R93 新版：原画正/侧/俯视生成三维岩峰（不再使用DEM主山）
+- [打开R93全新浏览器真3D](real3d/art/blueprint-r93/viewer.html?focus=all)
+- [R92旧DEM与R93新岩峰Chrome实拍对比](evidence/r93-concept-threeview-solid-rock/R92-DEM-vs-R93-THREEVIEW-REAL-CHROME-AB.jpg)
+- [R93真实Chrome四镜头](evidence/r93-concept-threeview-solid-rock/R93-REAL-CHROME-FOUR-VIEW-MODELING-CHECK.jpg)
+- [可编辑Blender源与GLB](real3d/art/blueprint-r93/assets/)
+- [工程限制和实际美术问题](R93-THREEVIEW-GEOMETRY-REAL-ART-GATE-20261110.md)
+
+本轮三种三视图岩柱具有真实体积并已接入现有青云宫资产，但仍为WIP艺术重建，不是张家界实景摄影测量，岩石纹理、岩柱多样性、自然基台和可行走古道需要继续验收。

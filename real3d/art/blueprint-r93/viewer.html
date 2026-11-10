@@ -1,0 +1,281 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>青云宫 R93 · 三视图驱动真实岩峰 3D · 全新场景</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#101f2d;color:#f2f4ec;font:14px "Microsoft YaHei",system-ui,sans-serif}
+#canvas{position:fixed;inset:0;width:100%;height:100%}
+#panel{position:fixed;top:14px;left:14px;max-width:min(940px,calc(100vw - 28px));background:#071824d9;border:1px solid #e5ece238;border-radius:12px;padding:12px 14px;backdrop-filter:blur(10px)}
+h1{margin:0 0 5px;font-size:18px}p{font-size:12px;color:#cbdad5;margin:4px 0 10px}
+#buttons{display:flex;flex-wrap:wrap;gap:6px}
+button,a{font:inherit;font-size:12px;color:#e5f6ee;background:#1b3c48;border:1px solid #dde7d14c;border-radius:7px;padding:7px 10px;cursor:pointer;text-decoration:none}
+button:hover,a:hover{background:#35616a}button[aria-pressed=true]{background:#426e63;border-color:#e2ecb1}
+#status{margin-top:9px;font-size:11px;color:#a3d9bb}
+#info{position:fixed;right:14px;bottom:15px;max-width:315px;background:#091b28d5;border-radius:10px;border:1px solid #e9f4dd3b;padding:10px 12px;font-size:11px;line-height:1.75}
+#info strong{color:#fff3d9}
+#alert{position:fixed;left:14px;bottom:16px;padding:14px;background:#642e37;max-width:480px;display:none}
+@media(max-width:760px){h1{font-size:15px}#panel{padding:8px}#info{right:8px;max-width:220px;font-size:10px;line-height:1.4}}
+</style>
+<script type="importmap">{"imports":{"three":"../../node_modules/three/build/three.module.js","three/addons/":"../../node_modules/three/examples/jsm/"}}</script>
+</head><body><canvas id="canvas"></canvas>
+<div id="panel"><h1>青云宫 R93 · 三视图直建险峰</h1>
+<p>已完全切换到真正的 3D 岩峰体积网格。正面、侧面、俯视来自同一张原画资产；不加载 DEM，也不再出现绿色大山坡。</p>
+<div id="buttons">
+<button data-focus="all" aria-pressed="true">整座仙峰群</button>
+<button data-focus="03">③青云宫主峰</button>
+<button data-focus="01">①青云山门</button>
+<button data-focus="02">②西崖峰</button>
+<button data-focus="04">④远峰</button>
+<button data-focus="05">⑤东岭</button>
+<button data-focus="06">⑥玄元峰</button>
+<button data-view="front">岩峰正视</button>
+<button data-view="side">岩峰侧视</button>
+<button data-view="top">岩峰俯视</button>
+<button id="palaces" aria-pressed="true">原有宫观：显示</button>
+<button id="wireframe" aria-pressed="false">真实网格：关闭</button>
+<a href="../blueprint-r92/viewer.html?focus=all">对比旧 R92 DEM</a>
+</div><div id="status">加载岩峰 GLB 与真实建筑资产中……</div></div>
+<div id="info">
+<strong>三种岩体三视图雕刻候选</strong>
+<div>建模来源：原画 B 型岩峰正／侧／俯</div>
+<div>主峰：约 345 米，独立厚度岩壁</div>
+<div>顶端：宽头、腰部内收的山体</div>
+<div>六区：实体岩峰接地，无悬浮岛</div>
+<div>宫殿：原模型统一米制缩放</div>
+<div>美术：原画重建，不冒充实景测绘</div>
+<div>长路线与碰撞：仍未验收</div>
+<div>左键旋转 · 滚轮缩放 · 右键平移</div>
+</div>
+<div id="alert" role="alert"></div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {createR58QingyunBlockout} from '../../world/qingyun-palace/r58-world-blockout.mjs';
+import {createR59ArchitecturalUpgrade} from '../../world/qingyun-palace/r59-architecture-construction.mjs';
+const canvas=document.getElementById('canvas');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+renderer.setSize(innerWidth,innerHeight,false);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.97;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#9bb5c4');
+scene.fog=new THREE.FogExp2('#abc0c6',.00017);
+const camera=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.6,12000);
+const ortho=new THREE.OrthographicCamera(-260,260,165,-165,.1,4500);
+let currentCamera=camera;
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.075;controls.maxDistance=5000;
+controls.minDistance=15;controls.maxPolarAngle=Math.PI*.52;
+scene.add(new THREE.HemisphereLight('#fff4de','#355068',1.0));
+const sun=new THREE.DirectionalLight('#fff0db',2.1);
+sun.position.set(-760,1120,850);scene.add(sun);
+const rim=new THREE.DirectionalLight('#afdbeb',.48);
+rim.position.set(500,900,-950);scene.add(rim);
+const loader=new GLTFLoader();
+const sourceHeights={A:430,B:355,C:345};
+const rockAssets={};
+const actualGeom={meshes:0,triangles:0,variants:[]};
+await Promise.all(['A','B','C'].map(async key=>{
+ const loaded=await loader.loadAsync('./assets/R93_'+key+'_stone_peak_true_3view.glb');
+ const instance=loaded.scene;
+ let faces=0;
+ instance.traverse(x=>{if(x.isMesh){
+  faces+=(x.geometry.index?.count??x.geometry.getAttribute('position').count)/3;
+  x.material.side=THREE.DoubleSide;
+  x.material.flatShading=true;x.material.roughness=.985;x.material.needsUpdate=true;
+ }});
+ if(faces<80000)throw Error('R93 '+key+' did not load source threeview mesh');
+ rockAssets[key]=instance;
+ actualGeom.meshes++;actualGeom.triangles+=faces;
+ actualGeom.variants.push({id:key,triangles:faces,heightMeters:sourceHeights[key]});
+}));
+const assetMesh=rockAssets.B;
+const rocks=new THREE.Group();rocks.name='R93_ACTUAL_3VIEW_ROCK_REAL_THICKNESS_NO_DEM';
+scene.add(rocks);
+const templates=[
+ {id:'03',x:0,z:-190,kind:'C',scale:1,rot:0,width:30,source:'main palace'},
+ {id:'04',x:-400,z:-430,kind:'B',scale:.80,rot:1.6,width:18,source:'west'},
+ {id:'05',x:415,z:-345,kind:'A',scale:.76,rot:2.8,width:18,source:'east'},
+ {id:'01',x:-270,z:435,kind:'C',scale:.50,rot:3.8,width:19,source:'gate'},
+ {id:'02',x:-715,z:-5,kind:'B',scale:.62,rot:1.2,width:15,source:'left cliff'},
+ {id:'06',x:595,z:210,kind:'A',scale:.63,rot:5.1,width:12,source:'far pavilion'}
+];
+const anchors={};const palaces=new THREE.Group();
+palaces.name='R93_ORIGINAL_QINGYUN_BUILDING_ASSETS';scene.add(palaces);
+for(const t of templates){
+ const rock=rockAssets[t.kind].clone(true);
+ rock.scale.setScalar(t.scale);rock.rotation.y=t.rot;rock.position.set(t.x,0,t.z);
+ rock.name='R93_SCULPTED_B_TYPE_REAL_ROCK_'+t.id;
+ rocks.add(rock);
+ anchors[t.id]={...t,height:sourceHeights[t.kind]*t.scale,hasRealRock:true};
+}
+// More slender, smaller grounded rock formations frame the SIX anchored
+// positions; each has the same actual geometry, not fake billboard mountains.
+const background=[[-850,-780,.43,2.0],[-550,-930,.38,3.4],
+ [-50,-1050,.48,.7],[530,-1010,.52,2.1],
+ [850,-760,.49,3.7],[-1080,-330,.47,1.1],
+ [1050,-90,.57,4.3],[-980,445,.35,5.1],
+ [1050,570,.36,1.7],[-550,830,.36,3.2],
+ [260,950,.34,2.2],[680,830,.36,.9]];
+for(let i=0;i<background.length;i++){
+ const [x,z,scale,rot]=background[i];
+ const kind=['A','B','C'][i%3];
+ const rock=rockAssets[kind].clone(true);rock.scale.setScalar(scale);
+ rock.position.set(x,0,z);rock.rotation.y=rot;rock.name='R93_BACKGROUND_SCULPTED_PEAK_'+i;
+ rocks.add(rock);
+}
+// Isolated clouds are radial sprites, not a flat water-like rectangular plane.
+const cloudCanvas=document.createElement('canvas');cloudCanvas.width=128;cloudCanvas.height=128;
+const ctx=cloudCanvas.getContext('2d');
+const grad=ctx.createRadialGradient(64,64,4,64,64,62);
+grad.addColorStop(0,'rgba(247,252,251,.52)');grad.addColorStop(.5,'rgba(242,250,250,.19)');grad.addColorStop(1,'rgba(242,250,250,0)');
+ctx.fillStyle=grad;ctx.fillRect(0,0,128,128);
+const cloudTex=new THREE.CanvasTexture(cloudCanvas);
+// Ground contact is physical but deliberately unobtrusive: a dark
+// rocky valley plate, not the old green DEM mountains or invented roads.
+const canyonFloor=new THREE.Mesh(
+ new THREE.PlaneGeometry(4200,4200),
+ new THREE.MeshStandardMaterial({color:'#354941',roughness:1,metalness:0}));
+canyonFloor.rotation.x=-Math.PI/2;
+canyonFloor.position.set(0,-9,-190);
+canyonFloor.name='R93_SOLID_GROUNDED_CANYON_BED_NOT_DEM';
+canyonFloor.receiveShadow=true;scene.add(canyonFloor);
+const pebbleGeo=new THREE.DodecahedronGeometry(8,1);
+const pebbleMaterial=new THREE.MeshStandardMaterial({color:'#637067',roughness:1});
+const baseRocks=new THREE.InstancedMesh(pebbleGeo,pebbleMaterial,450);
+baseRocks.name='R93_GROUNDED_BEDROCK_FRAGMENT_FIELD';
+const tempMatrix=new THREE.Matrix4(),tempPos=new THREE.Vector3();
+const tempScale=new THREE.Vector3(),tempRot=new THREE.Quaternion(),tempEuler=new THREE.Euler();
+for(let i=0;i<450;i++){
+ const t=templates[i%templates.length],phi=i*2.399963229728653;
+ const radius=35+Math.sqrt((i%75)/75)*108;
+ tempPos.set(t.x+Math.cos(phi)*radius,-5+Math.sin(i*13.1)*2,t.z+Math.sin(phi)*radius);
+ tempEuler.set(.18*Math.sin(i),i*.25,.11*Math.cos(i*2.7));
+ tempRot.setFromEuler(tempEuler);
+ const size=2.1+(i%17)*.13;
+ tempScale.set(size,1.3+(i%9)*.2,size*.8);
+ tempMatrix.compose(tempPos,tempRot,tempScale);
+ baseRocks.setMatrixAt(i,tempMatrix);
+}
+baseRocks.instanceMatrix.needsUpdate=true;
+scene.add(baseRocks);
+const mist=new THREE.Group();mist.name='R93_VOLUME_MIST_SPRITES_NOT_FLOATING_WATER_PLANE';
+scene.add(mist);
+for(let i=0;i<105;i++){
+ const a=i*2.399963229728653,r=180+Math.sqrt(i/105)*1200;
+ const sprite=new THREE.Sprite(new THREE.SpriteMaterial({
+  map:cloudTex,color:0xebf0ef,transparent:true,
+  opacity:.13,depthWrite:false,blending:THREE.NormalBlending
+ }));
+ const y=45+(i%8)*6;
+ sprite.position.set(Math.cos(a)*r,y,Math.sin(a)*r-200);
+ sprite.scale.set(210+(i%6)*24,100+(i%5)*12,1);
+ mist.add(sprite);
+}
+const assetInfo={};const old=createR58QingyunBlockout();
+const kit=createR59ArchitecturalUpgrade(old.terrain.mesh);
+function install(obj,id,source){
+ const a=anchors[id];if(!a)throw Error('missing real rock anchor '+id);
+ const bb=new THREE.Box3().setFromObject(obj);
+ if(bb.isEmpty())throw Error('empty building '+id);
+ const size=bb.getSize(new THREE.Vector3()),center=bb.getCenter(new THREE.Vector3());
+ const max=Math.max(size.x,size.z);
+ if(max<=0)throw Error('bad source temple span');
+ obj.position.sub(center);
+ const holder=new THREE.Group();holder.add(obj);
+ const ratio=a.width/max;
+ holder.scale.setScalar(ratio);
+ const cb=new THREE.Box3().setFromObject(holder);
+ holder.position.set(a.x,a.height+1.8-cb.min.y,a.z);
+ palaces.add(holder);
+ assetInfo[id]={source,sourceMaxWidthM:Number(max.toFixed(2)),
+  actualTargetWidthM:a.width,uniformScaling:Number(ratio.toFixed(5)),
+  originalBuildingAsset:true,foundationCertified:false,
+  cliffEngineeringPending:true};
+ return holder;
+}
+for(const id of ['01','03']){
+ const m=kit.group.children.find(x=>x.userData?.regionId===id);
+ if(m)install(m,id,'R59 original retained scene geometry');
+}
+await Promise.all(['04','05'].map(async id=>{
+ try{
+  const obj=await loader.loadAsync('../../art/blueprint-r66/export/QY-GEOGRAPHY-001-R66-region-'+id+'-native.glb');
+  install(obj.scene,id,'R66 original Blender GLB');
+ }catch(e){assetInfo[id]={sourceLoadError:String(e.message||e),assetLoadPassed:false};}
+}));
+const detailMesh=rocks.children[0];
+function applyPerspective(target,eye){
+ currentCamera=camera;controls.object=camera;
+ camera.up.set(0,1,0);
+ controls.target.copy(target);
+ camera.position.copy(eye);camera.updateProjectionMatrix();controls.update();
+}
+function focus(id='all'){
+ if(id==='all')applyPerspective(new THREE.Vector3(-30,170,-150),new THREE.Vector3(980,640,1280));
+ else{
+  const a=anchors[id];if(!a)throw Error('unknown R93 peak '+id);
+  applyPerspective(new THREE.Vector3(a.x,a.height*.81,a.z),
+    new THREE.Vector3(a.x+215,a.height+80,a.z+360));
+ }
+ for(const btn of document.querySelectorAll('[data-focus]'))
+  btn.setAttribute('aria-pressed',String(btn.dataset.focus===id));
+ for(const btn of document.querySelectorAll('[data-view]'))
+  btn.setAttribute('aria-pressed','false');
+ return {id,eye:camera.position.toArray(),target:controls.target.toArray()};
+}
+function view(kind){
+ const a=anchors['03'];const target=new THREE.Vector3(a.x,a.height*.5,a.z);
+ currentCamera=ortho;controls.object=ortho;
+ ortho.up.set(0,1,0);
+ if(kind==='front')ortho.position.set(a.x,a.height*.5,a.z+1100);
+ else if(kind==='side')ortho.position.set(a.x+1100,a.height*.5,a.z);
+ else if(kind==='top'){ortho.position.set(a.x,a.height+1100,a.z);
+  ortho.up.set(0,0,-1);}
+ else throw Error('invalid R93 orthographic view');
+ controls.target.copy(target);
+ const span=kind==='top'?220:255;
+ ortho.left=-span;ortho.right=span;
+ ortho.top=span/(innerWidth/innerHeight);ortho.bottom=-ortho.top;
+ ortho.updateProjectionMatrix();controls.update();
+ document.querySelectorAll('[data-view]').forEach(b=>
+  b.setAttribute('aria-pressed',String(b.dataset.view===kind)));
+ return {kind,ortho:true};
+}
+document.querySelectorAll('[data-focus]').forEach(x=>x.addEventListener('click',()=>focus(x.dataset.focus)));
+document.querySelectorAll('[data-view]').forEach(x=>x.addEventListener('click',()=>view(x.dataset.view)));
+document.getElementById('palaces').addEventListener('click',()=>{
+ palaces.visible=!palaces.visible;
+ const b=document.getElementById('palaces');
+ b.textContent='原有宫观：'+(palaces.visible?'显示':'隐藏');
+ b.setAttribute('aria-pressed',String(palaces.visible));
+});
+document.getElementById('wireframe').addEventListener('click',()=>{
+ const on=document.getElementById('wireframe').getAttribute('aria-pressed')!=='true';
+ rocks.traverse(o=>{if(o.isMesh)o.material.wireframe=on;});
+ const b=document.getElementById('wireframe');b.setAttribute('aria-pressed',String(on));
+ b.textContent='真实网格：'+(on?'显示':'关闭');
+});
+focus(new URLSearchParams(location.search).get('focus')||'all');
+if(new URLSearchParams(location.search).get('view'))
+ view(new URLSearchParams(location.search).get('view'));
+document.getElementById('status').textContent='A/B/C 三种三视图雕刻岩峰已载入：'+actualGeom.triangles.toLocaleString()+
+ ' 三角面；18 座真实厚度岩峰，原有宫殿 '+Object.values(assetInfo).filter(x=>x.originalBuildingAsset).length+' 处；旧 DEM 未加载。';
+function report(){return {revision:'R93',actualTrueMeshFromArtistThreeViews:true,
+  oldDEMLoaded:false,photogrammetryCertified:false,
+  source:'image_gen original concept B front side top silhouette visual hull',
+  rock:actualGeom,placedPeakMeshes:rocks.children.length,
+  groundedSummitCount:6,floatingIslands:0,groundIsDEMRaster:false,groundedCanyonFloor:true,
+  oldR92TerrainPresent:false,buildings:assetInfo,
+  palacesVisible:palaces.visible,
+  solidRockAssetsImported:true,
+  totalRendererFrames:renderer.info.render.frame,
+  runtimeCollisionCertified:false,artApproved:false};}
+function frame(){requestAnimationFrame(frame);controls.update();renderer.render(scene,currentCamera);}
+frame();
+window.__qingyunR93={report,focus,view,anchors,rocks,palaces,camera,ortho,controls};
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+ ortho.top=ortho.right/(innerWidth/innerHeight);ortho.bottom=-ortho.top;ortho.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight,false);});
+</script></body></html>
