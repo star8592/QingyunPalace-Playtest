@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>青云宫 R95｜单峰双宫 · 岩壁融合美术审查</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#121c26;color:#edf0ee;font:14px system-ui,'Microsoft YaHei',sans-serif}
+canvas{display:block;width:100vw;height:100vh}
+header{position:fixed;left:20px;top:18px;z-index:5;max-width:590px;background:#15212de8;backdrop-filter:blur(12px);padding:16px 18px;border:1px solid #69818b66;border-radius:14px;box-shadow:0 12px 32px #0004}
+h1{font-size:18px;margin:0 0 8px;font-weight:600}
+p{margin:5px 0 10px;line-height:1.5;color:#c7d4db;font-size:12px}
+nav{display:flex;flex-wrap:wrap;gap:7px}
+button,a{font:inherit;font-size:12px;text-decoration:none;border:1px solid #526877;border-radius:8px;background:#263745;color:#eee;padding:8px 11px;cursor:pointer}
+button[aria-pressed="true"]{background:#698a84;color:#0b1718;border-color:#a9cec0}
+#report{font-size:11px;color:#b9c7c9;margin-top:10px;white-space:normal;line-height:1.5}
+aside{position:fixed;right:20px;bottom:20px;z-index:3;width:min(210px,25vw);background:#15212dde;border-radius:12px;overflow:hidden;border:1px solid #71858c4d}
+aside img{width:100%;max-height:230px;object-fit:cover;display:block}
+aside small{display:block;padding:8px 10px;font-size:10px;line-height:1.4;color:#bdcbd3}
+aside.expanded{right:20px;bottom:auto;top:20px;width:min(440px,40vw)} aside.expanded img{max-height:calc(100vh - 90px);object-fit:contain;background:#edf0ef} #alarm{position:fixed;bottom:18px;left:18px;max-width:65vw;color:#ffd3c5;background:#752e26e8;padding:12px;display:none;border-radius:8px;z-index:9}
+@media(max-width:720px){header{left:8px;right:8px;top:8px;padding:9px;max-width:none}h1{font-size:14px}aside{width:125px;right:8px;bottom:8px}aside img{max-height:125px}p{font-size:11px}}
+</style>
+<script type="importmap">{"imports":{"three":"../../node_modules/three/build/three.module.js","three/addons/":"../../node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<canvas id="scene" aria-label="真实3D模型，鼠标拖动可环绕"></canvas>
+<header>
+<h1>R95｜青云宫 · 一峰两殿</h1>
+<p>仙峰沿用 R94 用户认可的图转 3D 原模型，未改变山体几何。峰顶主殿与半山亭阁复用青云宫现有 R66 真三维建筑。台基接岩、道路可达性仍需审查，本版只作建筑与山体的实景比对。宫殿台基与崖壁仍需美术深化，山路暂未完成。</p>
+<nav>
+<button data-focus="all" aria-pressed="true">整峰</button><button data-focus="summit">峰顶主殿</button><button data-focus="mid">半山亭阁</button><button data-view="three" aria-pressed="true">斜45°</button><button data-view="front">正面</button><button data-view="right">右侧</button><button data-view="back">背面</button><button data-view="top">俯视</button><button id="wire">线框：关</button><button id="trees">崖松：显示</button><button id="palaces">建筑：显示</button><button id="compare">对照原画</button><a href="../blueprint-r94/viewer.html?view=three" title="查看未加宫殿的原始峰体">R94 原峰对照</a>
+</nav>
+<div id="report">正在读取真实 GLB 网格及贴图……</div>
+</header>
+<aside><img alt="原创砂岩岩峰正面原画" src="assets/r94-chatgpt-original-768.jpg"><small>原画：ChatGPT ImageGen<br>真实图像转 3D · 仅作为研发参考</small></aside>
+<div id="alarm" role="alert"></div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const canvas=document.querySelector('#scene'), report=document.querySelector('#report'), alarm=document.querySelector('#alarm');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+renderer.setSize(innerWidth,innerHeight,false);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#314653');
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.01,10000);
+const orbit=new OrbitControls(camera,canvas);orbit.enableDamping=true;orbit.dampingFactor=.06;orbit.minDistance=.05;
+scene.add(new THREE.HemisphereLight('#f5f6ee','#334451',1.75));
+for(const [color,intensity,x,y,z] of [['#fff1d5',2.2,4,8,5],['#bbd7ec',1.0,-5,4,-2],['#c9d9e1',.85,3,2,-5]]){
+ const light=new THREE.DirectionalLight(color,intensity);light.position.set(x,y,z);scene.add(light);
+}
+let root=null,baseBox=null,mid=new THREE.Vector3(),radius=1,wire=false,focusKind='all',activeView='three';
+function focusOn(kind){
+ if(!root)return;
+ focusKind=kind;
+ const b=new THREE.Box3();
+ if(kind==='all')b.setFromObject(root);
+ else {
+  root.traverse(o=>{if(o.isMesh&&o.name.startsWith(kind==='summit'?'R95_SUMMIT_':'R95_MID_'))b.expandByObject(o);});
+ }
+ if(b.isEmpty()){console.warn('No architecture group',kind);return;}
+ mid=b.getCenter(new THREE.Vector3());
+ radius=Math.max(b.getSize(new THREE.Vector3()).x,b.getSize(new THREE.Vector3()).y,b.getSize(new THREE.Vector3()).z);
+ document.querySelectorAll('[data-focus]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.focus===kind)));
+ goView(activeView);
+}
+document.querySelectorAll('[data-focus]').forEach(x=>x.onclick=()=>focusOn(x.dataset.focus));
+
+function goView(v){
+ if(!root)return;
+ const dirs={three:[1,.5,1.25],front:[0,.15,1],right:[1,.15,0],back:[0,.15,-1],top:[0,1,.001]};
+ activeView=v;const dir=new THREE.Vector3(...(dirs[v]||dirs.three)).normalize();
+ camera.position.copy(mid).addScaledVector(dir,Math.max(.13,radius*(focusKind==='all'?1.9:2.7)));orbit.target.copy(mid);camera.near=Math.max(.001,radius/10000);camera.far=radius*10000;camera.updateProjectionMatrix();orbit.update();
+ document.querySelectorAll('[data-view]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.view===v)));
+}
+document.querySelectorAll('[data-view]').forEach(x=>x.onclick=()=>goView(x.dataset.view));
+document.querySelector('#compare').onclick=()=>document.querySelector('aside').classList.toggle('expanded');
+let treesVisible=true;
+document.querySelector('#trees').onclick=()=>{
+ treesVisible=!treesVisible;
+ if(root)root.traverse(o=>{if(o.name.startsWith('CC0_AUTHORED_TREE_'))o.visible=treesVisible;});
+ document.querySelector('#trees').textContent='崖松：'+(treesVisible?'显示':'隐藏');
+};
+let palacesVisible=true;
+document.querySelector('#palaces').onclick=()=>{
+ palacesVisible=!palacesVisible;
+ if(root)root.traverse(o=>{if(o.isMesh&&o.name.startsWith('R95_'))o.visible=palacesVisible;});
+ document.querySelector('#palaces').textContent='建筑：'+(palacesVisible?'显示':'隐藏');
+};
+document.querySelector('#wire').onclick=()=>{wire=!wire;if(root)root.traverse(o=>{if(o.isMesh){const m=Array.isArray(o.material)?o.material:[o.material];m.forEach(x=>{if(x)x.wireframe=wire;});}});document.querySelector('#wire').textContent='线框：'+(wire?'开':'关')};
+try{
+ const gltf=await new GLTFLoader().loadAsync('./assets/R95_SINGLE_PEAK_PALACE_ASSEMBLY_REVIEW.glb');
+ root=gltf.scene;
+ let tri=0,mesh=0,materials=new Set(),textures=new Set();
+ root.traverse(o=>{if(!o.isMesh)return;mesh++;
+ const geo=o.geometry;
+ const pos=geo.attributes.position;
+ tri+=geo.index?geo.index.count/3:pos?.count/3||0;
+ for(const m of (Array.isArray(o.material)?o.material:[o.material])){
+  if(!m)continue;materials.add(m.uuid);
+  for(const key of ['map','normalMap','roughnessMap','metalnessMap','aoMap'])if(m[key])textures.add(m[key].uuid);
+ }
+ });
+ baseBox=new THREE.Box3().setFromObject(root);
+ const sz=baseBox.getSize(new THREE.Vector3());mid=baseBox.getCenter(new THREE.Vector3());
+ radius=Math.max(sz.x,sz.y,sz.z);
+ if(!Number.isFinite(radius)||radius<=0||mesh===0)throw Error('空模型或非法尺寸');
+ scene.add(root);
+ const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');
+ const gpu=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):'未公开';
+ report.textContent='峰顶主殿 + 半山亭阁 · 真实 GLB 网格 '+mesh+'个 · '+Math.round(tri).toLocaleString()+' 三角面 · 贴图 '+textures.size+'张 · 三轴 '+sz.x.toFixed(2)+' / '+sz.y.toFixed(2)+' / '+sz.z.toFixed(2)+' · GPU '+gpu;
+ document.documentElement.dataset.modelLoaded='true';
+ focusOn(new URLSearchParams(location.search).get('focus')||'all');goView(new URLSearchParams(location.search).get('view')||'three');
+}catch(err){
+ alarm.style.display='block';alarm.textContent='模型载入失败：'+String(err.message||err);report.textContent='NO-GO 模型未通过加载检查';document.documentElement.dataset.modelLoaded='false';
+}
+function frame(){requestAnimationFrame(frame);orbit.update();renderer.render(scene,camera);}frame();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight,false);});
+</script></body></html>

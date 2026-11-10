@@ -1,0 +1,25 @@
+{
+  "status": "ART REVIEW PENDING",
+  "rockGeometryUnchanged": true,
+  "design": "D - stepped heritage roof, embedded stone foundations, open pavilion and grounded piers",
+  "siteContacts": {
+    "summit": [
+      true,
+      0.42772,
+      0.712
+    ],
+    "mid": [
+      true,
+      0.1707,
+      0.788
+    ]
+  },
+  "browser": {
+    "state": "true",
+    "gpu": "ANGLE (NVIDIA, Vulkan 1.4.351 (NVIDIA NVIDIA GeForce RTX 5070 Ti (0x00002C05)), NVIDIA)",
+    "jsErrors": [],
+    "meshCount": 45,
+    "triangleCount": 2389538,
+    "cameraCount": 8
+  }
+}
